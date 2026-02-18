@@ -418,577 +418,521 @@
     </main>
 
     <script>
-    (function() {
-        var intro = document.getElementById('introScreen');
-        var introP = document.getElementById('introParticles');
+(function() {
+    var intro = document.getElementById('introScreen');
+    var introP = document.getElementById('introParticles');
 
-        for (var i = 0; i < 30; i++) {
-            var d = document.createElement('div');
-            d.className = 'intro-dot';
-            d.style.left = Math.random() * 100 + '%';
-            d.style.top = Math.random() * 100 + '%';
-            d.style.animationDuration = (4 + Math.random() * 8) + 's';
-            d.style.animationDelay = Math.random() * 4 + 's';
-            introP.appendChild(d);
-        }
-
-        var bgMusic = document.getElementById('bgMusic');
-        var musicToggle = document.getElementById('musicToggle');
-        var musicVisualizer = document.getElementById('musicVisualizer');
-        var musicPlaying = false;
-        bgMusic.volume = 0.3;
-
-        function dismissIntro() {
-            intro.classList.add('hidden');
-            bgMusic.play().then(function() {
-                musicPlaying = true;
-                musicVisualizer.classList.add('music-playing');
-            }).catch(function() {});
-        }
-        intro.addEventListener('click', dismissIntro);
-        intro.addEventListener('touchstart', dismissIntro, { once: true });
-
-        var themeToggle = document.getElementById('themeToggle');
-        var savedTheme = localStorage.getItem('theme') || 'dark';
-        function setTheme(t) {
-            document.documentElement.setAttribute('data-theme', t);
-            themeToggle.textContent = t === 'dark' ? '☀️' : '🌙';
-            localStorage.setItem('theme', t);
-        }
-        setTheme(savedTheme);
-        themeToggle.addEventListener('click', function() {
-            setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        });
-
-        musicToggle.addEventListener('click', function() {
-            if (musicPlaying) { bgMusic.pause(); musicVisualizer.classList.remove('music-playing'); }
-            else { bgMusic.play().catch(function(){}); musicVisualizer.classList.add('music-playing'); }
-            musicPlaying = !musicPlaying;
-        });
-
-        var menuBtn = document.getElementById('menuToggle');
-        var menuPanel = document.getElementById('menuPanel');
-        var menuOv = document.getElementById('menuOverlay');
-        var ham = document.getElementById('ham');
-        var menuOpen = false;
-        function toggleMenu() {
-            menuOpen = !menuOpen;
-            menuPanel.classList.toggle('active', menuOpen);
-            menuOv.classList.toggle('active', menuOpen);
-            ham.classList.toggle('active', menuOpen);
-        }
-        menuBtn.addEventListener('click', toggleMenu);
-        menuOv.addEventListener('click', toggleMenu);
-        document.querySelectorAll('.menu-item[href^="#"]').forEach(function(item) {
-            item.addEventListener('click', function() { if (menuOpen) toggleMenu(); });
-        });
-
-        var avatarWrapper = document.getElementById('avatarWrapper');
-        var avatarRipple = document.getElementById('avatarRipple');
-        avatarWrapper.addEventListener('click', function() {
-            avatarRipple.classList.remove('animate');
-            void avatarRipple.offsetWidth;
-            avatarRipple.classList.add('animate');
-            setTimeout(function() { avatarRipple.classList.remove('animate'); }, 800);
-        });
-
-        var quotes = [
-            '"Code is poetry written in logic."',
-            '"Design is intelligence made visible."',
-            '"Simplicity is the ultimate sophistication."',
-            '"First, solve the problem. Then, write the code."',
-            '"Make it work, make it right, make it fast."'
-        ];
-        var typedText = document.getElementById('typedText');
-        var qi = 0, ci = 0, del = false, spd = 50;
-        function typeWriter() {
-            var q = quotes[qi];
-            if (del) { typedText.textContent = q.substring(0, ci - 1); ci--; spd = 25; }
-            else { typedText.textContent = q.substring(0, ci + 1); ci++; spd = 50 + Math.random() * 50; }
-            if (!del && ci === q.length) { spd = 2500; del = true; }
-            else if (del && ci === 0) { del = false; qi = (qi + 1) % quotes.length; spd = 400; }
-            setTimeout(typeWriter, spd);
-        }
-        setTimeout(typeWriter, 1500);
-
-        function updateTime() {
-            var n = new Date();
-            var p = new Date(n.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
-            var h = p.getHours(), m = String(p.getMinutes()).padStart(2,'0'), s = String(p.getSeconds()).padStart(2,'0');
-            var ap = h >= 12 ? 'PM' : 'AM', h12 = h % 12 || 12;
-            document.getElementById('liveTime').textContent = h12 + ':' + m + ':' + s + ' ' + ap;
-            document.getElementById('liveDate').textContent = p.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
-        }
-        updateTime(); setInterval(updateTime, 1000);
-
-        function measurePing() {
-            var s = performance.now();
-            fetch('https://www.google.com/favicon.ico', { mode:'no-cors', cache:'no-store' })
-                .then(function() { document.getElementById('pingValue').textContent = Math.round(performance.now() - s) + 'ms'; })
-                .catch(function() { document.getElementById('pingValue').textContent = '--ms'; });
-        }
-        measurePing(); setInterval(measurePing, 5000);
-
-        (async function() {
-            if (!('getBattery' in navigator)) { document.getElementById('batteryText').textContent = 'N/A'; document.getElementById('batteryStatus').textContent = 'Not supported'; return; }
-            var bat = await navigator.getBattery();
-            function u() {
-                var l = Math.round(bat.level * 100), f = document.getElementById('batteryFill');
-                f.style.width = l + '%'; f.className = 'battery-fill';
-                if (l <= 20) f.classList.add('low'); else if (l <= 50) f.classList.add('medium');
-                document.getElementById('batteryText').textContent = l + '%';
-                document.getElementById('batteryStatus').textContent = bat.charging ? '⚡ Charging' : 'On battery';
-            }
-            u(); bat.addEventListener('levelchange', u); bat.addEventListener('chargingchange', u);
-        })();
-
-        var svs = document.querySelectorAll('.stat-value[data-count]');
-        var countObs = new IntersectionObserver(function(entries) {
-            entries.forEach(function(e) {
-                if (e.isIntersecting) {
-                    var el = e.target, t = parseInt(el.dataset.count), c = 0, inc = t / 50;
-                    var ti = setInterval(function() {
-                        c += inc;
-                        if (c >= t) { el.textContent = t.toLocaleString(); clearInterval(ti); }
-                        else el.textContent = Math.floor(c).toLocaleString();
-                    }, 16);
-                    countObs.unobserve(el);
-                }
-            });
-        }, { threshold: 0.5 });
-        svs.forEach(function(el) { countObs.observe(el); });
-
-        var reveals = document.querySelectorAll('.reveal');
-        var ticking = false;
-        function initialReveal() {
-            reveals.forEach(function(el, i) {
-                var rect = el.getBoundingClientRect();
-                if (rect.top < window.innerHeight * 0.85 && rect.bottom > window.innerHeight * 0.15) {
-                    el.style.transitionDelay = (i * 0.12) + 's';
-                    el.classList.add('visible');
-                    el.classList.remove('vanish-up', 'vanish-down');
-                }
-            });
-        }
-        function handleScrollReveal() {
-            var wH = window.innerHeight;
-            reveals.forEach(function(el) {
-                var rect = el.getBoundingClientRect();
-                el.style.transitionDelay = '0s';
-                if (rect.top < wH * 0.9 && rect.bottom > wH * 0.1) { el.classList.add('visible'); el.classList.remove('vanish-up', 'vanish-down'); }
-                else if (rect.bottom < wH * 0.05) { el.classList.remove('visible', 'vanish-down'); el.classList.add('vanish-up'); }
-                else if (rect.top > wH * 0.95) { el.classList.remove('visible', 'vanish-up'); el.classList.add('vanish-down'); }
-            });
-            ticking = false;
-        }
-        window.addEventListener('scroll', function() { if (!ticking) { requestAnimationFrame(handleScrollReveal); ticking = true; } }, { passive: true });
-        setTimeout(initialReveal, 100);
-        intro.addEventListener('transitionend', function() { initialReveal(); });
-
-        var pc = document.getElementById('particles');
-        function cp() {
-            var p = document.createElement('div'); p.className = 'particle';
-            p.style.left = Math.random() * 100 + '%';
-            p.style.animationDuration = (8 + Math.random() * 12) + 's';
-            p.style.animationDelay = Math.random() * 3 + 's';
-            var sz = (1 + Math.random() * 2) + 'px'; p.style.width = sz; p.style.height = sz;
-            pc.appendChild(p);
-            setTimeout(function() { p.remove(); }, 22000);
-        }
-        for (var j = 0; j < 12; j++) setTimeout(cp, j * 200);
-        setInterval(cp, 2500);
-
-        var gl = document.getElementById('cursorGlow');
-        var mx = 0, my = 0, gx = 0, gy = 0;
-        document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; });
-        function ag() { gx += (mx - gx) * 0.07; gy += (my - gy) * 0.07; gl.style.left = gx + 'px'; gl.style.top = gy + 'px'; requestAnimationFrame(ag); }
-        ag();
-
-        window.addEventListener('scroll', function() {
-            var t = document.documentElement.scrollTop;
-            var h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            document.getElementById('scrollProgress').style.width = (t / h) * 100 + '%';
-        });
-
-        // ===== FAKE CHAT SYSTEM =====
-var chatMessages = document.getElementById('chatMessages');
-var chatInput = document.getElementById('chatInput');
-var chatSendBtn = document.getElementById('chatSendBtn');
-var typingIndicator = document.getElementById('typingIndicator');
-var typingTextEl = document.getElementById('typingText');
-
-var fakeUsers = [
-    { name: 'Sakura_Dev', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sakura' },
-    { name: 'KaiTech', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kai' },
-    { name: 'LunaArt', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna' },
-    { name: 'Riku_Anime', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Riku' },
-    { name: 'ZenCoder', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Zen' },
-    { name: 'NightFox', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=NightFox' },
-    { name: 'AkiraX', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=AkiraX' },
-    { name: 'MikaUI', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MikaUI' },
-    { name: 'DarkByte', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=DarkByte' },
-    { name: 'YunaCode', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=YunaCode' },
-    { name: 'BlazePH', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=BlazePH' },
-    { name: 'SoraWEB', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=SoraWEB' },
-    { name: 'TsukiDev', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TsukiDev' },
-    { name: 'HiroLua', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=HiroLua' },
-    { name: 'KenjiPH', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=KenjiPH' },
-    { name: 'ReinaCSS', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ReinaCSS' },
-    { name: 'AsukaDev', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=AsukaDev' },
-    { name: 'NaruCode', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=NaruCode' },
-    { name: 'ShinjiJS', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ShinjiJS' },
-    { name: 'RinPython', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=RinPython' }
-];
-
-var fakeMessages = [
-    'This is so cool! 🔥',
-    'Amazing work Vincent! 💪',
-    'How did you make this? 🤔',
-    'The design is perfect ✨',
-    'Best portfolio I\'ve seen! 🏆',
-    'Following you now! 🫡',
-    'Love the animations 🎉',
-    'Teach me sensei! 🙏',
-    'This is next level 🚀',
-    'Clean code vibes 💻',
-    'The glow effects are insane 😍',
-    'You\'re so talented! 🌟',
-    'GG bro! 👏',
-    'Sheesh this is fire 🔥🔥',
-    'Can you make me one? 😂',
-    'W developer fr fr 💯',
-    'This puts my portfolio to shame lol 😭',
-    'The music is a nice touch 🎵',
-    'Bro went crazy with the CSS 🤯',
-    'I need to learn from you sensei 📚',
-    'How long did this take to build? ⏰',
-    'The particles are so satisfying ✨✨',
-    'This is giving cyberpunk vibes 🌃',
-    'My favorite portfolio ever! ❤️',
-    'Vincent never misses 🎯',
-    'That banner GIF is sick! 🖼️',
-    'I showed this to my friends, they love it 👀',
-    'The dark mode is chef\'s kiss 👨‍🍳',
-    'Dropping a follow right now 🏃‍♂️',
-    'This deserves more recognition 📢',
-    'The typing animation is so smooth 🧈',
-    'You should sell templates bro 💰',
-    'Filipino developers are built different 🇵🇭',
-    'Roblox and web dev? Multi-talented! 🎮💻',
-    'The neon ring around the avatar 😮‍💨',
-    'I\'ve been here for 5 minutes just scrolling 😂',
-    'The hover effects are addicting lol',
-    'Bookmarked this for inspiration 📌',
-    'You made this with just HTML/CSS/JS?? 🤯',
-    'Bro is a one-man agency 💼',
-    'The gradient text is beautiful 🌈',
-    'How do I get a portfolio like this? 🤔',
-    'VincentSensei supremacy 👑',
-    'This loads so fast too! ⚡',
-    'Even the scrollbar is styled lol 😂',
-    'The attention to detail is crazy 🔍',
-    'I want to hire you already 💳',
-    'Keep grinding king 👑🔥',
-    'This chat feature is genius 💡',
-    'Bruh the intro screen alone is fire 🔥',
-    'Is this hosted on Vercel? 🤔',
-    'The battery widget is such a cool idea 🔋',
-    'Real-time clock too?? This man thinks of everything 🕐',
-    'Just shared this on Discord 📤',
-    'My portfolio looks like a potato compared to this 🥔😂',
-    'The color scheme is perfection 🎨',
-    'How is this free?? 💀',
-    'Vincent out here making the internet look good 🌐',
-    'Every section has some wow factor 🤩',
-    'I\'m learning so much just by inspecting this 🧑‍💻',
-    'The mobile version is clean too! 📱',
-    'This should be on Awwwards fr 🏅',
-    'Anime lover AND developer? Based 😎',
-    'The verified badge is a nice flex ✅',
-    'Yo can we collab? 🤝',
-    'I\'m not leaving until I scroll through everything 📜',
-    'Pure talent right here 🎭',
-    'The orbit particles around the avatar were cool 🌌',
-    'Vincent: "I\'ll just make a simple portfolio" Also Vincent: 🚀🔥✨',
-    'This man codes while watching anime, respect 📺💻',
-    'First time seeing a portfolio with live chat 💬',
-    'Bro really said "let me flex" and delivered 😤',
-    'The Spotify icon links too? Nice attention to detail 🎧',
-    'I\'ve sent this to 5 people already 📩',
-    'Hello from Japan! Great work! 🇯🇵',
-    'Greetings from USA! 🇺🇸 Love this!',
-    'Pinoy pride! 🇵🇭🔥',
-    'Hello from Korea! 🇰🇷 Amazing design!',
-    'Watching from Brazil! 🇧🇷 Incredible work!',
-    'Fellow developer from Indonesia here 🇮🇩👋',
-    'Singapore dev checking in! 🇸🇬 This is inspirational!',
-    'From Malaysia with love! 🇲🇾 Keep it up!',
-    'Thailand dev says hi! 🇹🇭 Beautiful portfolio!',
-    'Aussie here! 🇦🇺 This is top tier mate!',
-    'UK developer impressed! 🇬🇧 Brilliant work!',
-    'Canada sends love! 🇨🇦 Absolutely stunning!',
-    'German precision meets Filipino creativity! 🇩🇪🇵🇭',
-    'French dev here, c\'est magnifique! 🇫🇷✨',
-    'India developer gang! 🇮🇳 Respect bro!',
-    'Vietnam dev loves this! 🇻🇳🔥',
-    'Hello from Mexico! 🇲🇽 Increíble!',
-    'Spanish dev here! 🇪🇸 Impresionante!',
-    'Italian developer says bravo! 🇮🇹👏'
-];
-
-var replyMessages = [
-    'Nice! 😄',
-    'Haha true! 😂',
-    'I agree! 👍',
-    'That\'s cool! ✨',
-    'Fr fr 🔥',
-    'W take 💯',
-    'Respect! 🫡',
-    'Let\'s go! 🚀',
-    'Facts! 💪',
-    'No cap 🧢',
-    'Big W! 🏆',
-    'Yessir! 🔥🔥',
-    'Period! 💅',
-    'So true bestie ✨',
-    'Couldn\'t agree more 👏',
-    'This is the way 🛤️',
-    'Absolutely! 💯💯',
-    'Real ones know 😎',
-    'Ong bro! 🙏',
-    'Spitting facts! 🗣️',
-    'W comment! 🏅',
-    'Based take 😤',
-    'Ngl that\'s fire 🔥',
-    'Screenshotting this 📸',
-    'Tell em! 📢',
-    'You dropped this 👑',
-    'Main character energy 🎬',
-    'Elite mindset 🧠',
-    'Say less 🤫',
-    'That part! ☝️'
-];
-
-function addChatMessage(name, color, avatar, text) {
-    var msg = document.createElement('div');
-    msg.className = 'chat-msg';
-    msg.innerHTML = '<img src="' + avatar + '" alt="" class="chat-msg-avatar">' +
-        '<div class="chat-msg-content">' +
-        '<div class="chat-msg-header">' +
-        '<span class="chat-msg-name ' + color + '">' + name + '</span>' +
-        '<span class="chat-msg-time">just now</span></div>' +
-        '<div class="chat-msg-text">' + text + '</div></div>';
-    chatMessages.appendChild(msg);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    while (chatMessages.children.length > 30) {
-        chatMessages.removeChild(chatMessages.firstChild);
+    for (var i = 0; i < 30; i++) {
+        var d = document.createElement('div');
+        d.className = 'intro-dot';
+        d.style.left = Math.random() * 100 + '%';
+        d.style.top = Math.random() * 100 + '%';
+        d.style.animationDuration = (4 + Math.random() * 8) + 's';
+        d.style.animationDelay = Math.random() * 4 + 's';
+        introP.appendChild(d);
     }
-}
 
-function sendMessage() {
-    var text = chatInput.value.trim();
-    if (!text) return;
-    addChatMessage('You', 'owner-color', 'https://i.imgur.com/GRNsJbf.gif', text);
-    chatInput.value = '';
+    var bgMusic = document.getElementById('bgMusic');
+    var musicToggle = document.getElementById('musicToggle');
+    var musicVisualizer = document.getElementById('musicVisualizer');
+    var musicPlaying = false;
+    bgMusic.volume = 0.3;
 
-    // Multiple fake replies
-    var numReplies = 1 + Math.floor(Math.random() * 3); // 1-3 replies
-    var delay = 500;
-
-    for (var r = 0; r < numReplies; r++) {
-        (function(replyIndex) {
-            setTimeout(function() {
-                var u = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
-                typingTextEl.textContent = u.name + ' is typing...';
-                typingIndicator.style.display = 'flex';
-
-                setTimeout(function() {
-                    typingIndicator.style.display = 'none';
-                    addChatMessage(u.name, u.color, u.avatar, replyMessages[Math.floor(Math.random() * replyMessages.length)]);
-                }, 1000 + Math.random() * 1500);
-            }, delay + (replyIndex * (2000 + Math.random() * 2000)));
-        })(r);
+    function dismissIntro() {
+        intro.classList.add('hidden');
+        bgMusic.play().then(function() {
+            musicPlaying = true;
+            musicVisualizer.classList.add('music-playing');
+        }).catch(function() {});
     }
-}
+    intro.addEventListener('click', dismissIntro);
+    intro.addEventListener('touchstart', dismissIntro, { once: true });
 
-chatSendBtn.addEventListener('click', sendMessage);
-chatInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') sendMessage();
-});
-
-// Auto fake messages - faster and more frequent
-var usedMessages = [];
-function getRandomMessage() {
-    if (usedMessages.length >= fakeMessages.length) {
-        usedMessages = [];
+    var themeToggle = document.getElementById('themeToggle');
+    var savedTheme = localStorage.getItem('theme') || 'dark';
+    function setTheme(t) {
+        document.documentElement.setAttribute('data-theme', t);
+        themeToggle.textContent = t === 'dark' ? '☀️' : '🌙';
+        localStorage.setItem('theme', t);
     }
-    var msg;
-    do {
-        msg = fakeMessages[Math.floor(Math.random() * fakeMessages.length)];
-    } while (usedMessages.indexOf(msg) !== -1);
-    usedMessages.push(msg);
-    return msg;
-}
-
-function autoFakeMessage() {
-    var u = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
-    typingTextEl.textContent = u.name + ' is typing...';
-    typingIndicator.style.display = 'flex';
-
-    setTimeout(function() {
-        typingIndicator.style.display = 'none';
-        addChatMessage(u.name, u.color, u.avatar, getRandomMessage());
-
-        // 40% chance of a second message quickly after
-        if (Math.random() < 0.4) {
-            setTimeout(function() {
-                var u2 = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
-                typingTextEl.textContent = u2.name + ' is typing...';
-                typingIndicator.style.display = 'flex';
-
-                setTimeout(function() {
-                    typingIndicator.style.display = 'none';
-                    addChatMessage(u2.name, u2.color, u2.avatar, getRandomMessage());
-
-                    // 25% chance of a third message
-                    if (Math.random() < 0.25) {
-                        setTimeout(function() {
-                            var u3 = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
-                            typingTextEl.textContent = u3.name + ' is typing...';
-                            typingIndicator.style.display = 'flex';
-                            setTimeout(function() {
-                                typingIndicator.style.display = 'none';
-                                addChatMessage(u3.name, u3.color, u3.avatar, getRandomMessage());
-                            }, 800 + Math.random() * 1200);
-                        }, 1000 + Math.random() * 1500);
-                    }
-                }, 800 + Math.random() * 1200);
-            }, 1500 + Math.random() * 2000);
-        }
-    }, 1500 + Math.random() * 1500);
-
-    // Next auto message: 4-8 seconds (much faster!)
-    setTimeout(autoFakeMessage, 4000 + Math.random() * 4000);
-}
-
-// Start auto messages after 3 seconds
-setTimeout(autoFakeMessage, 3000);
-
-// Random online count - more users now
-setInterval(function() {
-    var count = 8 + Math.floor(Math.random() * 15);
-    document.getElementById('onlineCount').textContent = count + ' Online';
-}, 10000);
-
-// Occasionally show "user joined" messages
-var joinMessages = [
-    ' just joined the chat! 👋',
-    ' is now online! 🟢',
-    ' entered the chat 💬',
-    ' has arrived! 🎉',
-    ' connected 🔗',
-    ' popped in! 👀',
-    ' is here! ✨',
-    ' just showed up! 🙌'
-];
-
-function randomJoinMessage() {
-    var u = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
-    var joinMsg = u.name + joinMessages[Math.floor(Math.random() * joinMessages.length)];
-
-    var msg = document.createElement('div');
-    msg.className = 'chat-msg';
-    msg.innerHTML = '<div class="chat-msg-content" style="text-align:center;width:100%">' +
-        '<div class="chat-msg-text" style="color:var(--text-tertiary);font-size:10px;font-style:italic">' +
-        joinMsg + '</div></div>';
-    chatMessages.appendChild(msg);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-
-    setTimeout(randomJoinMessage, 15000 + Math.random() * 25000);
-}
-setTimeout(randomJoinMessage, 8000);
-
-// Conversation chains - users replying to each other
-function conversationChain() {
-    var conversations = [
-        [
-            { msg: 'Anyone else here a Roblox dev? 🎮', delay: 0 },
-            { msg: 'Me! I make obby games 🏃', delay: 3000 },
-            { msg: 'Same! Lua scripting is so fun 💻', delay: 5500 },
-            { msg: 'Vincent\'s Lua scripts are next level tho 🔥', delay: 8000 }
-        ],
-        [
-            { msg: 'What anime are you guys watching? 📺', delay: 0 },
-            { msg: 'Just finished Demon Slayer! 🗡️', delay: 2500 },
-            { msg: 'Jujutsu Kaisen for me 👊', delay: 5000 },
-            { msg: 'One Piece forever! 🏴‍☠️', delay: 7000 },
-            { msg: 'All great choices! 🎌', delay: 9000 }
-        ],
-        [
-            { msg: 'What\'s everyone\'s favorite tech stack? 🛠️', delay: 0 },
-            { msg: 'React + Node.js all day! ⚛️', delay: 3000 },
-            { msg: 'Python gang rise up! 🐍', delay: 5000 },
-            { msg: 'HTML/CSS/JS purist here 😤', delay: 7500 },
-            { msg: 'Vincent uses everything lol 😂', delay: 10000 }
-        ],
-        [
-            { msg: 'How did Vincent make this portfolio so fire? 🤔', delay: 0 },
-            { msg: 'Pure CSS magic I think ✨', delay: 2000 },
-            { msg: 'The animations are all custom 🎨', delay: 4500 },
-            { msg: 'Big brain energy fr 🧠', delay: 6500 }
-        ],
-        [
-            { msg: 'Who else is coding at 3am? 🌙', delay: 0 },
-            { msg: 'Guilty! Coffee keeps me alive ☕', delay: 2500 },
-            { msg: '3am coding hits different tho 🎧', delay: 5000 },
-            { msg: 'Night owls unite! 🦉', delay: 7000 }
-        ],
-        [
-            { msg: 'Rate this portfolio 1-10? 🤔', delay: 0 },
-            { msg: '11/10 easy 💯', delay: 2000 },
-            { msg: '100/10 no question 🏆', delay: 3500 },
-            { msg: 'Infinity/10 🔥🔥🔥', delay: 5500 },
-            { msg: 'Off the charts! 📈', delay: 7000 }
-        ],
-        [
-            { msg: 'What got you into coding? 💭', delay: 0 },
-            { msg: 'Wanted to make cool websites like this! 🌐', delay: 3000 },
-            { msg: 'Roblox scripting was my gateway 🎮', delay: 5500 },
-            { msg: 'YouTube tutorials honestly 📹', delay: 8000 },
-            { msg: 'Same! Self-taught gang 💪', delay: 10000 }
-        ],
-        [
-            { msg: 'Filipino developers are insane fr 🇵🇭', delay: 0 },
-            { msg: 'We built different! 💪', delay: 2500 },
-            { msg: 'Pinoy pride! 🇵🇭🔥', delay: 4000 },
-            { msg: 'Mabuhay! 🎉', delay: 6000 }
-        ]
-    ];
-
-    var convo = conversations[Math.floor(Math.random() * conversations.length)];
-    var shuffledUsers = fakeUsers.slice().sort(function() { return 0.5 - Math.random(); });
-
-    convo.forEach(function(entry, index) {
-        setTimeout(function() {
-            var u = shuffledUsers[index % shuffledUsers.length];
-            typingTextEl.textContent = u.name + ' is typing...';
-            typingIndicator.style.display = 'flex';
-
-            setTimeout(function() {
-                typingIndicator.style.display = 'none';
-                addChatMessage(u.name, u.color, u.avatar, entry.msg);
-            }, 1000 + Math.random() * 800);
-        }, entry.delay);
+    setTheme(savedTheme);
+    themeToggle.addEventListener('click', function() {
+        setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
     });
 
-    // Next conversation: 30-50 seconds
-    setTimeout(conversationChain, 30000 + Math.random() * 20000);
-}
+    musicToggle.addEventListener('click', function() {
+        if (musicPlaying) { bgMusic.pause(); musicVisualizer.classList.remove('music-playing'); }
+        else { bgMusic.play().catch(function(){}); musicVisualizer.classList.add('music-playing'); }
+        musicPlaying = !musicPlaying;
+    });
 
-// Start conversations after 12 seconds
-setTimeout(conversationChain, 12000);
+    var menuBtn = document.getElementById('menuToggle');
+    var menuPanel = document.getElementById('menuPanel');
+    var menuOv = document.getElementById('menuOverlay');
+    var ham = document.getElementById('ham');
+    var menuOpen = false;
+    function toggleMenu() {
+        menuOpen = !menuOpen;
+        menuPanel.classList.toggle('active', menuOpen);
+        menuOv.classList.toggle('active', menuOpen);
+        ham.classList.toggle('active', menuOpen);
+    }
+    menuBtn.addEventListener('click', toggleMenu);
+    menuOv.addEventListener('click', toggleMenu);
+    document.querySelectorAll('.menu-item[href^="#"]').forEach(function(item) {
+        item.addEventListener('click', function() { if (menuOpen) toggleMenu(); });
+    });
 
+    var avatarWrapper = document.getElementById('avatarWrapper');
+    var avatarRipple = document.getElementById('avatarRipple');
+    avatarWrapper.addEventListener('click', function() {
+        avatarRipple.classList.remove('animate');
+        void avatarRipple.offsetWidth;
+        avatarRipple.classList.add('animate');
+        setTimeout(function() { avatarRipple.classList.remove('animate'); }, 800);
+    });
+
+    var quotes = [
+        '"Code is poetry written in logic."',
+        '"Design is intelligence made visible."',
+        '"Simplicity is the ultimate sophistication."',
+        '"First, solve the problem. Then, write the code."',
+        '"Make it work, make it right, make it fast."'
+    ];
+    var typedText = document.getElementById('typedText');
+    var qi = 0, ci = 0, del = false, spd = 50;
+    function typeWriter() {
+        var q = quotes[qi];
+        if (del) { typedText.textContent = q.substring(0, ci - 1); ci--; spd = 25; }
+        else { typedText.textContent = q.substring(0, ci + 1); ci++; spd = 50 + Math.random() * 50; }
+        if (!del && ci === q.length) { spd = 2500; del = true; }
+        else if (del && ci === 0) { del = false; qi = (qi + 1) % quotes.length; spd = 400; }
+        setTimeout(typeWriter, spd);
+    }
+    setTimeout(typeWriter, 1500);
+
+    function updateTime() {
+        var n = new Date();
+        var p = new Date(n.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
+        var h = p.getHours(), m = String(p.getMinutes()).padStart(2,'0'), s = String(p.getSeconds()).padStart(2,'0');
+        var ap = h >= 12 ? 'PM' : 'AM', h12 = h % 12 || 12;
+        document.getElementById('liveTime').textContent = h12 + ':' + m + ':' + s + ' ' + ap;
+        document.getElementById('liveDate').textContent = p.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+    }
+    updateTime(); setInterval(updateTime, 1000);
+
+    function measurePing() {
+        var s = performance.now();
+        fetch('https://www.google.com/favicon.ico', { mode:'no-cors', cache:'no-store' })
+            .then(function() { document.getElementById('pingValue').textContent = Math.round(performance.now() - s) + 'ms'; })
+            .catch(function() { document.getElementById('pingValue').textContent = '--ms'; });
+    }
+    measurePing(); setInterval(measurePing, 5000);
+
+    (async function() {
+        if (!('getBattery' in navigator)) { document.getElementById('batteryText').textContent = 'N/A'; document.getElementById('batteryStatus').textContent = 'Not supported'; return; }
+        var bat = await navigator.getBattery();
+        function u() {
+            var l = Math.round(bat.level * 100), f = document.getElementById('batteryFill');
+            f.style.width = l + '%'; f.className = 'battery-fill';
+            if (l <= 20) f.classList.add('low'); else if (l <= 50) f.classList.add('medium');
+            document.getElementById('batteryText').textContent = l + '%';
+            document.getElementById('batteryStatus').textContent = bat.charging ? '⚡ Charging' : 'On battery';
+        }
+        u(); bat.addEventListener('levelchange', u); bat.addEventListener('chargingchange', u);
     })();
-    </script>
+
+    var svs = document.querySelectorAll('.stat-value[data-count]');
+    var countObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+            if (e.isIntersecting) {
+                var el = e.target, t = parseInt(el.dataset.count), c = 0, inc = t / 50;
+                var ti = setInterval(function() {
+                    c += inc;
+                    if (c >= t) { el.textContent = t.toLocaleString(); clearInterval(ti); }
+                    else el.textContent = Math.floor(c).toLocaleString();
+                }, 16);
+                countObs.unobserve(el);
+            }
+        });
+    }, { threshold: 0.5 });
+    svs.forEach(function(el) { countObs.observe(el); });
+
+    var reveals = document.querySelectorAll('.reveal');
+    var ticking = false;
+    function initialReveal() {
+        reveals.forEach(function(el, i) {
+            var rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.85 && rect.bottom > window.innerHeight * 0.15) {
+                el.style.transitionDelay = (i * 0.12) + 's';
+                el.classList.add('visible');
+                el.classList.remove('vanish-up', 'vanish-down');
+            }
+        });
+    }
+    function handleScrollReveal() {
+        var wH = window.innerHeight;
+        reveals.forEach(function(el) {
+            var rect = el.getBoundingClientRect();
+            el.style.transitionDelay = '0s';
+            if (rect.top < wH * 0.9 && rect.bottom > wH * 0.1) { el.classList.add('visible'); el.classList.remove('vanish-up', 'vanish-down'); }
+            else if (rect.bottom < wH * 0.05) { el.classList.remove('visible', 'vanish-down'); el.classList.add('vanish-up'); }
+            else if (rect.top > wH * 0.95) { el.classList.remove('visible', 'vanish-up'); el.classList.add('vanish-down'); }
+        });
+        ticking = false;
+    }
+    window.addEventListener('scroll', function() { if (!ticking) { requestAnimationFrame(handleScrollReveal); ticking = true; } }, { passive: true });
+    setTimeout(initialReveal, 100);
+    intro.addEventListener('transitionend', function() { initialReveal(); });
+
+    var pc = document.getElementById('particles');
+    function cp() {
+        var p = document.createElement('div'); p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = Math.random() * 3 + 's';
+        var sz = (1 + Math.random() * 2) + 'px'; p.style.width = sz; p.style.height = sz;
+        pc.appendChild(p);
+        setTimeout(function() { p.remove(); }, 22000);
+    }
+    for (var j = 0; j < 12; j++) setTimeout(cp, j * 200);
+    setInterval(cp, 2500);
+
+    var gl = document.getElementById('cursorGlow');
+    var mx = 0, my = 0, gx = 0, gy = 0;
+    document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; });
+    function ag() { gx += (mx - gx) * 0.07; gy += (my - gy) * 0.07; gl.style.left = gx + 'px'; gl.style.top = gy + 'px'; requestAnimationFrame(ag); }
+    ag();
+
+    window.addEventListener('scroll', function() {
+        var t = document.documentElement.scrollTop;
+        var h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        document.getElementById('scrollProgress').style.width = (t / h) * 100 + '%';
+    });
+
+    // ===== MEGA CHAT SYSTEM =====
+    var chatMessages = document.getElementById('chatMessages');
+    var chatInput = document.getElementById('chatInput');
+    var chatSendBtn = document.getElementById('chatSendBtn');
+    var typingIndicator = document.getElementById('typingIndicator');
+    var typingTextEl = document.getElementById('typingText');
+
+    var fakeUsers = [
+        { name: 'Sakura_Dev', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sakura' },
+        { name: 'KaiTech', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kai' },
+        { name: 'LunaArt', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna' },
+        { name: 'Riku_Anime', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Riku' },
+        { name: 'ZenCoder', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Zen' },
+        { name: 'NightFox', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=NightFox' },
+        { name: 'AkiraX', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=AkiraX' },
+        { name: 'MikaUI', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MikaUI' },
+        { name: 'DarkByte', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=DarkByte' },
+        { name: 'YunaCode', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=YunaCode' },
+        { name: 'BlazePH', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=BlazePH' },
+        { name: 'SoraWEB', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=SoraWEB' },
+        { name: 'TsukiDev', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TsukiDev' },
+        { name: 'HiroLua', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=HiroLua' },
+        { name: 'KenjiPH', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=KenjiPH' },
+        { name: 'ReinaCSS', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ReinaCSS' },
+        { name: 'AsukaDev', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=AsukaDev' },
+        { name: 'NaruCode', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=NaruCode' },
+        { name: 'ShinjiJS', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ShinjiJS' },
+        { name: 'RinPython', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=RinPython' },
+        { name: 'HaruReact', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=HaruReact' },
+        { name: 'KuroNode', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=KuroNode' },
+        { name: 'MeiVue', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MeiVue' },
+        { name: 'TakaCSS', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TakaCSS' },
+        { name: 'YukiAPI', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=YukiAPI' },
+        { name: 'RyoGit', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=RyoGit' },
+        { name: 'AikoSQL', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=AikoSQL' },
+        { name: 'KazeFigma', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=KazeFigma' },
+        { name: 'SakiRust', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=SakiRust' },
+        { name: 'TomoDocker', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TomoDocker' },
+        { name: 'NaoLinux', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=NaoLinux' },
+        { name: 'RenSwift', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=RenSwift' },
+        { name: 'MakoKotlin', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MakoKotlin' },
+        { name: 'FumiC++', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=FumiCPP' },
+        { name: 'HanaTailwind', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=HanaTailwind' }
+    ];
+
+    var fakeMessages = [
+        'This is so cool! 🔥', 'Amazing work Vincent! 💪', 'How did you make this? 🤔',
+        'The design is perfect ✨', 'Best portfolio I\'ve seen! 🏆', 'Following you now! 🫡',
+        'Love the animations 🎉', 'Teach me sensei! 🙏', 'This is next level 🚀',
+        'Clean code vibes 💻', 'The glow effects are insane 😍', 'You\'re so talented! 🌟',
+        'GG bro! 👏', 'Sheesh this is fire 🔥🔥', 'Can you make me one? 😂',
+        'W developer fr fr 💯', 'This puts my portfolio to shame lol 😭',
+        'The music is a nice touch 🎵', 'Bro went crazy with the CSS 🤯',
+        'I need to learn from you sensei 📚', 'How long did this take to build? ⏰',
+        'The particles are so satisfying ✨✨', 'This is giving cyberpunk vibes 🌃',
+        'My favorite portfolio ever! ❤️', 'Vincent never misses 🎯',
+        'That banner GIF is sick! 🖼️', 'I showed this to my friends, they love it 👀',
+        'The dark mode is chef\'s kiss 👨‍🍳', 'Dropping a follow right now 🏃‍♂️',
+        'This deserves more recognition 📢', 'The typing animation is so smooth 🧈',
+        'You should sell templates bro 💰', 'Filipino developers are built different 🇵🇭',
+        'Roblox and web dev? Multi-talented! 🎮💻', 'The neon ring around the avatar 😮‍💨',
+        'I\'ve been here for 5 minutes just scrolling 😂', 'The hover effects are addicting lol',
+        'Bookmarked this for inspiration 📌', 'You made this with just HTML/CSS/JS?? 🤯',
+        'Bro is a one-man agency 💼', 'The gradient text is beautiful 🌈',
+        'How do I get a portfolio like this? 🤔', 'VincentSensei supremacy 👑',
+        'This loads so fast too! ⚡', 'Even the scrollbar is styled lol 😂',
+        'The attention to detail is crazy 🔍', 'I want to hire you already 💳',
+        'Keep grinding king 👑🔥', 'This chat feature is genius 💡',
+        'Bruh the intro screen alone is fire 🔥', 'Is this hosted on Vercel? 🤔',
+        'The battery widget is such a cool idea 🔋',
+        'Real-time clock too?? This man thinks of everything 🕐',
+        'Just shared this on Discord 📤',
+        'My portfolio looks like a potato compared to this 🥔😂',
+        'The color scheme is perfection 🎨', 'How is this free?? 💀',
+        'Vincent out here making the internet look good 🌐',
+        'Every section has some wow factor 🤩',
+        'I\'m learning so much just by inspecting this 🧑‍💻',
+        'The mobile version is clean too! 📱', 'This should be on Awwwards fr 🏅',
+        'Anime lover AND developer? Based 😎', 'The verified badge is a nice flex ✅',
+        'Yo can we collab? 🤝', 'I\'m not leaving until I scroll through everything 📜',
+        'Pure talent right here 🎭', 'Hello from Japan! Great work! 🇯🇵',
+        'Greetings from USA! 🇺🇸 Love this!', 'Pinoy pride! 🇵🇭🔥',
+        'Hello from Korea! 🇰🇷 Amazing design!', 'Watching from Brazil! 🇧🇷 Incredible!',
+        'Fellow developer from Indonesia here 🇮🇩👋',
+        'Singapore dev checking in! 🇸🇬 Inspirational!',
+        'From Malaysia with love! 🇲🇾 Keep it up!',
+        'Thailand dev says hi! 🇹🇭 Beautiful!', 'Aussie here! 🇦🇺 Top tier mate!',
+        'UK developer impressed! 🇬🇧 Brilliant!', 'Canada sends love! 🇨🇦 Stunning!',
+        'German precision meets Filipino creativity! 🇩🇪🇵🇭',
+        'French dev here, c\'est magnifique! 🇫🇷✨',
+        'India developer gang! 🇮🇳 Respect bro!', 'Vietnam dev loves this! 🇻🇳🔥',
+        'Hello from Mexico! 🇲🇽 Increíble!', 'Spanish dev here! 🇪🇸 Impresionante!',
+        'Italian developer says bravo! 🇮🇹👏',
+        'Just wow... I\'m speechless 😶', 'Who needs a team when you code like this? 🦸',
+        'My jaw literally dropped 😲', 'This is what peak performance looks like 📊',
+        'I showed my boss, he wants to hire you 💼', 'The transitions are buttery smooth 🧈✨',
+        'OK I\'m officially a fan now 🤩', 'How many hours of CSS is this?? ⏱️',
+        'I tried inspecting the code... it\'s beautiful too 🔬',
+        'This should be a template on GitHub 📦', 'Proof that Filipino devs are world-class 🌏',
+        'The footer hearts are a cute touch 💕', 'I want to learn web dev now because of this 📖',
+        'Dark theme + neon = perfection 🌑✨', 'Who else is vibing to the background music? 🎶',
+        'Can confirm, this works perfect on mobile 📲', 'The intro animation had me hooked 🎣',
+        'I\'m showing this at my next dev meetup 🎤', 'This is ART not just code 🖼️',
+        'Bro really built a whole experience 🎢', '10/10 would visit again 🔄',
+        'The favicon is even custom 🔖', 'Everything is so well thought out 🧩',
+        'I need this energy in my projects 💥', 'My eyes are blessed right now 👁️✨',
+        'This man really said "watch me" and delivered 😤🔥',
+        'Portfolio goals achieved ✅', 'The tech stack section is fire 🛠️🔥',
+        'I can feel the passion in every pixel 💎', 'Keep inspiring us Vincent! 🌟',
+        'Instant follow, instant bookmark 📌❤️', 'This chat makes it feel so alive 💬✨',
+        'Bro coded his way into my heart 💗😂', 'Top 1% portfolio for sure 🏅',
+        'I want to be this good one day 🎯', 'The color transitions are mesmerizing 🌈',
+        'Every developer needs to see this 👨‍💻', 'My new favorite website on the internet 🌐❤️',
+        'Vincent is living proof hard work pays off 💪', 'This sets a new standard fr 📐',
+        'The glow-name animation is SICK 🤒🔥', 'Respect the grind 🫡💯',
+        'I\'ve refreshed this page 5 times already lol 🔄😂',
+        'Someone get this man a job at Google 🔍', 'The ping widget is genius ngl 📡',
+        'CSS god walking among us 🚶‍♂️👑', 'I\'m taking notes rn 📝',
+        'This hits different at 2am 🌙✨', 'My React portfolio crying rn 😭⚛️',
+        'No framework needed when you\'re THIS good 💪',
+        'The banner-to-avatar overlap is *chef\'s kiss* 👨‍🍳💋',
+        'Pure vanilla JS and still destroys everything 🍦🔥',
+        'I aspire to reach this level 🧗', 'Sent this to my dev group chat 📱💬',
+        'They should teach this in bootcamps 🏕️', 'Internet won today because of Vincent 🏆🌐',
+        'Ok who gave Vincent all the talent?? 😂🎁', 'Front-end mastery at its finest 🎨💻',
+        'The scroll animations are A+ work 📜✨', 'Love from Saudi Arabia! 🇸🇦🔥',
+        'Nigerian dev here! 🇳🇬 This is elite!', 'Egyptian developer impressed! 🇪🇬 Wow!',
+        'South African dev says 🇿🇦 incredible!', 'Colombian dev loves this! 🇨🇴',
+        'Swedish dev checking in! 🇸🇪 Beautiful work!', 'Dutch dev here! 🇳🇱 Geweldig!',
+        'Polish developer impressed! 🇵🇱 Świetne!', 'Turkish dev says harika! 🇹🇷',
+        'Russian dev here! 🇷🇺 Отлично!', 'Chinese dev loves this! 🇨🇳 太棒了!',
+        'Greek dev says bravo! 🇬🇷 Μπράβο!', 'Argentine dev here! 🇦🇷 Genial!',
+        'Chilean dev impressed! 🇨🇱 Bacán!', 'Peruvian dev says chevere! 🇵🇪',
+        'Romanian dev checking in! 🇷🇴 Superb!', 'Czech developer says skvělé! 🇨🇿',
+        'Hungarian dev loves it! 🇭🇺 Remek!', 'Finnish dev says loistavaa! 🇫🇮',
+        'Norwegian dev checking in! 🇳🇴 Fantastisk!', 'Danish dev says fantastisk! 🇩🇰',
+        'New Zealand dev here! 🇳🇿 Choice bro!', 'Irish dev loves this! 🇮🇪 Class!',
+        'Scottish dev says braw! 🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'Taiwanese dev impressed! 🇹🇼 讚!',
+        'Hong Kong dev says 正! 🇭🇰', 'Moroccan dev loves this! 🇲🇦',
+        'Kenyan dev checking in! 🇰🇪 Amazing!', 'Ghanaian dev says big ups! 🇬🇭',
+        'Ethiopian dev impressed! 🇪🇹', 'Bangladeshi dev loves it! 🇧🇩',
+        'Sri Lankan dev says 🇱🇰 beautiful!', 'Pakistani dev impressed! 🇵🇰 Zabardast!',
+        'Nepalese dev checking in! 🇳🇵', 'Myanmar dev loves this! 🇲🇲',
+        'Cambodian dev says awesome! 🇰🇭', 'Laos dev checking in! 🇱🇦'
+    ];
+
+    var replyMessages = [
+        'Nice! 😄', 'Haha true! 😂', 'I agree! 👍', 'That\'s cool! ✨',
+        'Fr fr 🔥', 'W take 💯', 'Respect! 🫡', 'Let\'s go! 🚀',
+        'Facts! 💪', 'No cap 🧢', 'Big W! 🏆', 'Yessir! 🔥🔥',
+        'Period! 💅', 'So true bestie ✨', 'Couldn\'t agree more 👏',
+        'This is the way 🛤️', 'Absolutely! 💯💯', 'Real ones know 😎',
+        'Ong bro! 🙏', 'Spitting facts! 🗣️', 'W comment! 🏅',
+        'Based take 😤', 'Ngl that\'s fire 🔥', 'Screenshotting this 📸',
+        'Tell em! 📢', 'You dropped this 👑', 'Main character energy 🎬',
+        'Elite mindset 🧠', 'Say less 🤫', 'That part! ☝️',
+        'Literally same 😂', 'Real talk 💬', 'Can\'t argue with that 🤷',
+        'THIS 👆🔥', 'Mood 😤', 'Amen to that 🙌', 'Preach! 🗣️✨',
+        'Underrated comment 📌', 'Saving this 💾', 'W energy 🏅',
+        'Chef\'s kiss on that take 👨‍🍳💋', 'Dropping wisdom 📚', 'King/Queen energy 👑',
+        'No lies detected 🔍', 'Hits different 🎯', 'Goated comment 🐐',
+        'Top tier reply 🏆', 'Adding this to my bio 📝', 'Frame this 🖼️',
+        'This should be pinned 📌🔥', 'Put that on a T-shirt 👕😂'
+    ];
+
+    function addChatMessage(name, color, avatar, text) {
+        var msg = document.createElement('div');
+        msg.className = 'chat-msg';
+        msg.innerHTML = '<img src="' + avatar + '" alt="" class="chat-msg-avatar">' +
+            '<div class="chat-msg-content">' +
+            '<div class="chat-msg-header">' +
+            '<span class="chat-msg-name ' + color + '">' + name + '</span>' +
+            '<span class="chat-msg-time">just now</span></div>' +
+            '<div class="chat-msg-text">' + text + '</div></div>';
+        chatMessages.appendChild(msg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        while (chatMessages.children.length > 40) {
+            chatMessages.removeChild(chatMessages.firstChild);
+        }
+    }
+
+    function sendMessage() {
+        var text = chatInput.value.trim();
+        if (!text) return;
+        addChatMessage('You', 'owner-color', 'https://i.imgur.com/GRNsJbf.gif', text);
+        chatInput.value = '';
+        var numReplies = 1 + Math.floor(Math.random() * 4);
+        var delay = 500;
+        for (var r = 0; r < numReplies; r++) {
+            (function(ri) {
+                setTimeout(function() {
+                    var u = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+                    typingTextEl.textContent = u.name + ' is typing...';
+                    typingIndicator.style.display = 'flex';
+                    setTimeout(function() {
+                        typingIndicator.style.display = 'none';
+                        addChatMessage(u.name, u.color, u.avatar, replyMessages[Math.floor(Math.random() * replyMessages.length)]);
+                    }, 800 + Math.random() * 1200);
+                }, delay + (ri * (1500 + Math.random() * 1500)));
+            })(r);
+        }
+    }
+
+    chatSendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') sendMessage(); });
+
+    var usedMsgs = [];
+    function getRandMsg() {
+        if (usedMsgs.length >= fakeMessages.length) usedMsgs = [];
+        var m;
+        do { m = fakeMessages[Math.floor(Math.random() * fakeMessages.length)]; } while (usedMsgs.indexOf(m) !== -1);
+        usedMsgs.push(m);
+        return m;
+    }
+
+    function autoMsg() {
+        var u = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+        typingTextEl.textContent = u.name + ' is typing...';
+        typingIndicator.style.display = 'flex';
+        setTimeout(function() {
+            typingIndicator.style.display = 'none';
+            addChatMessage(u.name, u.color, u.avatar, getRandMsg());
+            if (Math.random() < 0.5) {
+                setTimeout(function() {
+                    var u2 = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+                    typingTextEl.textContent = u2.name + ' is typing...';
+                    typingIndicator.style.display = 'flex';
+                    setTimeout(function() {
+                        typingIndicator.style.display = 'none';
+                        addChatMessage(u2.name, u2.color, u2.avatar, getRandMsg());
+                        if (Math.random() < 0.4) {
+                            setTimeout(function() {
+                                var u3 = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+                                typingTextEl.textContent = u3.name + ' is typing...';
+                                typingIndicator.style.display = 'flex';
+                                setTimeout(function() {
+                                    typingIndicator.style.display = 'none';
+                                    addChatMessage(u3.name, u3.color, u3.avatar, getRandMsg());
+                                    if (Math.random() < 0.3) {
+                                        setTimeout(function() {
+                                            var u4 = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+                                            typingTextEl.textContent = u4.name + ' is typing...';
+                                            typingIndicator.style.display = 'flex';
+                                            setTimeout(function() {
+                                                typingIndicator.style.display = 'none';
+                                                addChatMessage(u4.name, u4.color, u4.avatar, getRandMsg());
+                                            }, 600 + Math.random() * 800);
+                                        }, 800 + Math.random() * 1000);
+                                    }
+                                }, 600 + Math.random() * 1000);
+                            }, 800 + Math.random() * 1200);
+                        }
+                    }, 700 + Math.random() * 1000);
+                }, 1000 + Math.random() * 1500);
+            }
+        }, 1200 + Math.random() * 1200);
+        setTimeout(autoMsg, 3000 + Math.random() * 3000);
+    }
+    setTimeout(autoMsg, 2000);
+
+    setInterval(function() {
+        document.getElementById('onlineCount').textContent = (12 + Math.floor(Math.random() * 25)) + ' Online';
+    }, 8000);
+
+    var joinMsgs = [' just joined! 👋',' is now online! 🟢',' entered the chat 💬',' has arrived! 🎉',' connected 🔗',' popped in! 👀',' is here! ✨',' just showed up! 🙌',' logged in! 🔐',' appeared! ⚡',' dropped in! 🪂',' is watching! 👁️'];
+    function joinMsg() {
+        var u = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+        var msg = document.createElement('div');
+        msg.className = 'chat-msg';
+        msg.innerHTML = '<div class="chat-msg-content" style="text-align:center;width:100%"><div class="chat-msg-text" style="color:var(--text-tertiary);font-size:10px;font-style:italic">' + u.name + joinMsgs[Math.floor(Math.random() * joinMsgs.length)] + '</div></div>';
+        chatMessages.appendChild(msg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        setTimeout(joinMsg, 10000 + Math.random() * 15000);
+    }
+    setTimeout(joinMsg, 5000);
+
+    var leaveMsgs = [' left the chat 👋',' went offline 🔴',' disconnected 📴',' logged out 🚪',' went AFK 💤'];
+    function leaveMsg() {
+        var u = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+        var msg = document.createElement('div');
+        msg.className = 'chat-msg';
+        msg.innerHTML = '<div class="chat-msg-content" style="text-align:center;width:100%"><div class="chat-msg-text" style="color:var(--text-tertiary);font-size:10px;font-style:italic">' + u.name + leaveMsgs[Math.floor(Math.random() * leaveMsgs.length)] + '</div></div>';
+        chatMessages.appendChild(msg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        setTimeout(leaveMsg, 20000 + Math.random() * 30000);
+    }
+    setTimeout(leaveMsg, 18000);
+
+    function convoChain() {
+        var convos = [
+            [{ m:'Anyone else here a Roblox dev? 🎮',d:0 },{ m:'Me! I make obby games 🏃',d:2500 },{ m:'Same! Lua scripting is fun 💻',d:4500 },{ m:'Vincent\'s scripts are next level 🔥',d:6500 },{ m:'I started because of him tbh 🫡',d:8500 }],
+            [{ m:'What anime are you watching? 📺',d:0 },{ m:'Demon Slayer just ended 🗡️',d:2000 },{ m:'Jujutsu Kaisen S3 hype 👊',d:4000 },{ m:'One Piece forever! 🏴‍☠️',d:5500 },{ m:'Solo Leveling was insane 🔥',d:7000 },{ m:'All W choices 🎌',d:8500 }],
+            [{ m:'Favorite tech stack? 🛠️',d:0 },{ m:'React + Next.js all day ⚛️',d:2500 },{ m:'Python Django gang 🐍',d:4500 },{ m:'HTML/CSS/JS purist 😤',d:6000 },{ m:'Svelte underrated tbh 🔥',d:8000 },{ m:'Vincent uses everything lol 😂',d:10000 }],
+            [{ m:'How did Vincent make this so fire? 🤔',d:0 },{ m:'Pure CSS magic ✨',d:1800 },{ m:'Custom animations for sure 🎨',d:3500 },{ m:'Big brain energy 🧠',d:5000 },{ m:'Months of work probably ⏰',d:6500 },{ m:'Worth every second 💯',d:8000 }],
+            [{ m:'Who else coding at 3am? 🌙',d:0 },{ m:'Coffee keeps me alive ☕',d:2000 },{ m:'3am coding hits different 🎧',d:3800 },{ m:'Night owls unite! 🦉',d:5500 },{ m:'The bugs come out at night too 🐛😂',d:7000 }],
+            [{ m:'Rate this portfolio 1-10? 🤔',d:0 },{ m:'11/10 easy 💯',d:1500 },{ m:'100/10 no question 🏆',d:3000 },{ m:'Infinity/10 🔥🔥🔥',d:4500 },{ m:'Off the charts 📈',d:6000 },{ m:'Broke the scale 💥',d:7500 }],
+            [{ m:'What got you into coding? 💭',d:0 },{ m:'Cool websites like this 🌐',d:2500 },{ m:'Roblox scripting gateway 🎮',d:4500 },{ m:'YouTube tutorials 📹',d:6500 },{ m:'Self-taught gang 💪',d:8000 },{ m:'Never looked back 🔥',d:9500 }],
+            [{ m:'Filipino devs are insane fr 🇵🇭',d:0 },{ m:'We built different 💪',d:2000 },{ m:'Pinoy pride! 🇵🇭🔥',d:3500 },{ m:'Mabuhay! 🎉',d:5000 },{ m:'Represent! 🫡',d:6500 }],
+            [{ m:'What\'s your dream project? 💭',d:0 },{ m:'Building the next big app 📱',d:2500 },{ m:'A game engine from scratch 🎮',d:4500 },{ m:'AI-powered portfolio 🤖',d:6500 },{ m:'Anything with Vincent\'s design skills 😂',d:8500 }],
+            [{ m:'Best programming language? 🏆',d:0 },{ m:'JavaScript obviously 💛',d:2000 },{ m:'Python is king 🐍👑',d:3500 },{ m:'Rust is the future 🦀',d:5000 },{ m:'*laughs in TypeScript* 😏',d:6500 },{ m:'They\'re all great in their own way 🤝',d:8500 }],
+            [{ m:'Dark mode or light mode? 🌗',d:0 },{ m:'Dark mode always 🌑',d:1500 },{ m:'My eyes appreciate dark mode 👀',d:3000 },{ m:'Light mode people are brave 😂',d:4500 },{ m:'Vincent\'s dark mode is perfection ✨',d:6000 }],
+            [{ m:'Coffee or energy drinks? ☕⚡',d:0 },{ m:'Coffee all the way ☕',d:2000 },{ m:'Monster energy at 3am 🥤',d:3500 },{ m:'Water. I\'m built different 💧😤',d:5500 },{ m:'All of the above honestly 😂',d:7000 }],
+            [{ m:'Tabs or spaces? 👀',d:0 },{ m:'Tabs. Fight me. 😤',d:1500 },{ m:'Spaces are cleaner 🧹',d:3000 },{ m:'*grabs popcorn* 🍿',d:4500 },{ m:'Prettier handles it for me 😂',d:6000 },{ m:'The real answer right there ☝️',d:7500 }],
+            [{ m:'VS Code or vim? 💻',d:0 },{ m:'VS Code with 50 extensions 😂',d:2000 },{ m:'Vim gang rise up ⌨️',d:3500 },{ m:'I can\'t exit vim help 😭',d:5000 },{ m:'Neovim is the way 🔥',d:6500 }]
+        ];
+        var c = convos[Math.floor(Math.random() * convos.length)];
+        var su = fakeUsers.slice().sort(function() { return 0.5 - Math.random(); });
+        c.forEach(function(e, i) {
+            setTimeout(function() {
+                var u = su[i % su.length];
+                typingTextEl.textContent = u.name + ' is typing...';
+                typingIndicator.style.display = 'flex';
+                setTimeout(function() {
+                    typingIndicator.style.display = 'none';
+                    addChatMessage(u.name, u.color, u.avatar, e.m);
+                }, 800 + Math.random() * 700);
+            }, e.d);
+        });
+        setTimeout(convoChain, 25000 + Math.random() * 15000);
+    }
+    setTimeout(convoChain, 10000);
+
+})();
+</script>
 </body>
 </html>
