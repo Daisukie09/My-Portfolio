@@ -611,60 +611,192 @@
         });
 
         // ===== FAKE CHAT SYSTEM =====
-        var chatMessages = document.getElementById('chatMessages');
-        var chatInput = document.getElementById('chatInput');
-        var chatSendBtn = document.getElementById('chatSendBtn');
-        var typingIndicator = document.getElementById('typingIndicator');
-        var typingTextEl = document.getElementById('typingText');
+var chatMessages = document.getElementById('chatMessages');
+var chatInput = document.getElementById('chatInput');
+var chatSendBtn = document.getElementById('chatSendBtn');
+var typingIndicator = document.getElementById('typingIndicator');
+var typingTextEl = document.getElementById('typingText');
 
-        var fakeUsers = [
-            { name: 'Sakura_Dev', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sakura' },
-            { name: 'KaiTech', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kai' },
-            { name: 'LunaArt', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna' },
-            { name: 'Riku_Anime', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Riku' },
-            { name: 'ZenCoder', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Zen' }
-        ];
+var fakeUsers = [
+    { name: 'Sakura_Dev', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sakura' },
+    { name: 'KaiTech', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Kai' },
+    { name: 'LunaArt', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Luna' },
+    { name: 'Riku_Anime', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Riku' },
+    { name: 'ZenCoder', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Zen' },
+    { name: 'NightFox', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=NightFox' },
+    { name: 'AkiraX', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=AkiraX' },
+    { name: 'MikaUI', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MikaUI' },
+    { name: 'DarkByte', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=DarkByte' },
+    { name: 'YunaCode', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=YunaCode' },
+    { name: 'BlazePH', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=BlazePH' },
+    { name: 'SoraWEB', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=SoraWEB' },
+    { name: 'TsukiDev', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TsukiDev' },
+    { name: 'HiroLua', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=HiroLua' },
+    { name: 'KenjiPH', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=KenjiPH' },
+    { name: 'ReinaCSS', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ReinaCSS' },
+    { name: 'AsukaDev', color: 'mod-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=AsukaDev' },
+    { name: 'NaruCode', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=NaruCode' },
+    { name: 'ShinjiJS', color: 'vip-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ShinjiJS' },
+    { name: 'RinPython', color: 'member-color', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=RinPython' }
+];
 
-        var fakeMessages = [
-            'This is so cool! 🔥',
-            'Amazing work Vincent! 💪',
-            'How did you make this? 🤔',
-            'The design is perfect ✨',
-            'Best portfolio I\'ve seen! 🏆',
-            'Following you now! 🫡',
-            'Love the animations 🎉',
-            'Teach me sensei! 🙏',
-            'This is next level 🚀',
-            'Clean code vibes 💻',
-            'The glow effects are insane 😍',
-            'You\'re so talented! 🌟',
-            'GG bro! 👏',
-            'Sheesh this is fire 🔥🔥',
-            'Can you make me one? 😂'
-        ];
+var fakeMessages = [
+    'This is so cool! 🔥',
+    'Amazing work Vincent! 💪',
+    'How did you make this? 🤔',
+    'The design is perfect ✨',
+    'Best portfolio I\'ve seen! 🏆',
+    'Following you now! 🫡',
+    'Love the animations 🎉',
+    'Teach me sensei! 🙏',
+    'This is next level 🚀',
+    'Clean code vibes 💻',
+    'The glow effects are insane 😍',
+    'You\'re so talented! 🌟',
+    'GG bro! 👏',
+    'Sheesh this is fire 🔥🔥',
+    'Can you make me one? 😂',
+    'W developer fr fr 💯',
+    'This puts my portfolio to shame lol 😭',
+    'The music is a nice touch 🎵',
+    'Bro went crazy with the CSS 🤯',
+    'I need to learn from you sensei 📚',
+    'How long did this take to build? ⏰',
+    'The particles are so satisfying ✨✨',
+    'This is giving cyberpunk vibes 🌃',
+    'My favorite portfolio ever! ❤️',
+    'Vincent never misses 🎯',
+    'That banner GIF is sick! 🖼️',
+    'I showed this to my friends, they love it 👀',
+    'The dark mode is chef\'s kiss 👨‍🍳',
+    'Dropping a follow right now 🏃‍♂️',
+    'This deserves more recognition 📢',
+    'The typing animation is so smooth 🧈',
+    'You should sell templates bro 💰',
+    'Filipino developers are built different 🇵🇭',
+    'Roblox and web dev? Multi-talented! 🎮💻',
+    'The neon ring around the avatar 😮‍💨',
+    'I\'ve been here for 5 minutes just scrolling 😂',
+    'The hover effects are addicting lol',
+    'Bookmarked this for inspiration 📌',
+    'You made this with just HTML/CSS/JS?? 🤯',
+    'Bro is a one-man agency 💼',
+    'The gradient text is beautiful 🌈',
+    'How do I get a portfolio like this? 🤔',
+    'VincentSensei supremacy 👑',
+    'This loads so fast too! ⚡',
+    'Even the scrollbar is styled lol 😂',
+    'The attention to detail is crazy 🔍',
+    'I want to hire you already 💳',
+    'Keep grinding king 👑🔥',
+    'This chat feature is genius 💡',
+    'Bruh the intro screen alone is fire 🔥',
+    'Is this hosted on Vercel? 🤔',
+    'The battery widget is such a cool idea 🔋',
+    'Real-time clock too?? This man thinks of everything 🕐',
+    'Just shared this on Discord 📤',
+    'My portfolio looks like a potato compared to this 🥔😂',
+    'The color scheme is perfection 🎨',
+    'How is this free?? 💀',
+    'Vincent out here making the internet look good 🌐',
+    'Every section has some wow factor 🤩',
+    'I\'m learning so much just by inspecting this 🧑‍💻',
+    'The mobile version is clean too! 📱',
+    'This should be on Awwwards fr 🏅',
+    'Anime lover AND developer? Based 😎',
+    'The verified badge is a nice flex ✅',
+    'Yo can we collab? 🤝',
+    'I\'m not leaving until I scroll through everything 📜',
+    'Pure talent right here 🎭',
+    'The orbit particles around the avatar were cool 🌌',
+    'Vincent: "I\'ll just make a simple portfolio" Also Vincent: 🚀🔥✨',
+    'This man codes while watching anime, respect 📺💻',
+    'First time seeing a portfolio with live chat 💬',
+    'Bro really said "let me flex" and delivered 😤',
+    'The Spotify icon links too? Nice attention to detail 🎧',
+    'I\'ve sent this to 5 people already 📩',
+    'Hello from Japan! Great work! 🇯🇵',
+    'Greetings from USA! 🇺🇸 Love this!',
+    'Pinoy pride! 🇵🇭🔥',
+    'Hello from Korea! 🇰🇷 Amazing design!',
+    'Watching from Brazil! 🇧🇷 Incredible work!',
+    'Fellow developer from Indonesia here 🇮🇩👋',
+    'Singapore dev checking in! 🇸🇬 This is inspirational!',
+    'From Malaysia with love! 🇲🇾 Keep it up!',
+    'Thailand dev says hi! 🇹🇭 Beautiful portfolio!',
+    'Aussie here! 🇦🇺 This is top tier mate!',
+    'UK developer impressed! 🇬🇧 Brilliant work!',
+    'Canada sends love! 🇨🇦 Absolutely stunning!',
+    'German precision meets Filipino creativity! 🇩🇪🇵🇭',
+    'French dev here, c\'est magnifique! 🇫🇷✨',
+    'India developer gang! 🇮🇳 Respect bro!',
+    'Vietnam dev loves this! 🇻🇳🔥',
+    'Hello from Mexico! 🇲🇽 Increíble!',
+    'Spanish dev here! 🇪🇸 Impresionante!',
+    'Italian developer says bravo! 🇮🇹👏'
+];
 
-        function addChatMessage(name, color, avatar, text) {
-            var msg = document.createElement('div');
-            msg.className = 'chat-msg';
-            msg.innerHTML = '<img src="' + avatar + '" alt="" class="chat-msg-avatar">' +
-                '<div class="chat-msg-content">' +
-                '<div class="chat-msg-header">' +
-                '<span class="chat-msg-name ' + color + '">' + name + '</span>' +
-                '<span class="chat-msg-time">just now</span></div>' +
-                '<div class="chat-msg-text">' + text + '</div></div>';
-            chatMessages.appendChild(msg);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            while (chatMessages.children.length > 20) {
-                chatMessages.removeChild(chatMessages.firstChild);
-            }
-        }
+var replyMessages = [
+    'Nice! 😄',
+    'Haha true! 😂',
+    'I agree! 👍',
+    'That\'s cool! ✨',
+    'Fr fr 🔥',
+    'W take 💯',
+    'Respect! 🫡',
+    'Let\'s go! 🚀',
+    'Facts! 💪',
+    'No cap 🧢',
+    'Big W! 🏆',
+    'Yessir! 🔥🔥',
+    'Period! 💅',
+    'So true bestie ✨',
+    'Couldn\'t agree more 👏',
+    'This is the way 🛤️',
+    'Absolutely! 💯💯',
+    'Real ones know 😎',
+    'Ong bro! 🙏',
+    'Spitting facts! 🗣️',
+    'W comment! 🏅',
+    'Based take 😤',
+    'Ngl that\'s fire 🔥',
+    'Screenshotting this 📸',
+    'Tell em! 📢',
+    'You dropped this 👑',
+    'Main character energy 🎬',
+    'Elite mindset 🧠',
+    'Say less 🤫',
+    'That part! ☝️'
+];
 
-        function sendMessage() {
-            var text = chatInput.value.trim();
-            if (!text) return;
-            addChatMessage('You', 'owner-color', 'https://i.imgur.com/GRNsJbf.gif', text);
-            chatInput.value = '';
+function addChatMessage(name, color, avatar, text) {
+    var msg = document.createElement('div');
+    msg.className = 'chat-msg';
+    msg.innerHTML = '<img src="' + avatar + '" alt="" class="chat-msg-avatar">' +
+        '<div class="chat-msg-content">' +
+        '<div class="chat-msg-header">' +
+        '<span class="chat-msg-name ' + color + '">' + name + '</span>' +
+        '<span class="chat-msg-time">just now</span></div>' +
+        '<div class="chat-msg-text">' + text + '</div></div>';
+    chatMessages.appendChild(msg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    while (chatMessages.children.length > 30) {
+        chatMessages.removeChild(chatMessages.firstChild);
+    }
+}
 
+function sendMessage() {
+    var text = chatInput.value.trim();
+    if (!text) return;
+    addChatMessage('You', 'owner-color', 'https://i.imgur.com/GRNsJbf.gif', text);
+    chatInput.value = '';
+
+    // Multiple fake replies
+    var numReplies = 1 + Math.floor(Math.random() * 3); // 1-3 replies
+    var delay = 500;
+
+    for (var r = 0; r < numReplies; r++) {
+        (function(replyIndex) {
             setTimeout(function() {
                 var u = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
                 typingTextEl.textContent = u.name + ' is typing...';
@@ -672,39 +804,189 @@
 
                 setTimeout(function() {
                     typingIndicator.style.display = 'none';
-                    var replies = [
-                        'Nice! 😄', 'Haha true! 😂', 'I agree! 👍',
-                        'That\'s cool! ✨', 'Fr fr 🔥', 'W take 💯',
-                        'Respect! 🫡', 'Let\'s go! 🚀'
-                    ];
-                    addChatMessage(u.name, u.color, u.avatar, replies[Math.floor(Math.random() * replies.length)]);
-                }, 1500 + Math.random() * 2000);
-            }, 500);
+                    addChatMessage(u.name, u.color, u.avatar, replyMessages[Math.floor(Math.random() * replyMessages.length)]);
+                }, 1000 + Math.random() * 1500);
+            }, delay + (replyIndex * (2000 + Math.random() * 2000)));
+        })(r);
+    }
+}
+
+chatSendBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') sendMessage();
+});
+
+// Auto fake messages - faster and more frequent
+var usedMessages = [];
+function getRandomMessage() {
+    if (usedMessages.length >= fakeMessages.length) {
+        usedMessages = [];
+    }
+    var msg;
+    do {
+        msg = fakeMessages[Math.floor(Math.random() * fakeMessages.length)];
+    } while (usedMessages.indexOf(msg) !== -1);
+    usedMessages.push(msg);
+    return msg;
+}
+
+function autoFakeMessage() {
+    var u = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+    typingTextEl.textContent = u.name + ' is typing...';
+    typingIndicator.style.display = 'flex';
+
+    setTimeout(function() {
+        typingIndicator.style.display = 'none';
+        addChatMessage(u.name, u.color, u.avatar, getRandomMessage());
+
+        // 40% chance of a second message quickly after
+        if (Math.random() < 0.4) {
+            setTimeout(function() {
+                var u2 = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+                typingTextEl.textContent = u2.name + ' is typing...';
+                typingIndicator.style.display = 'flex';
+
+                setTimeout(function() {
+                    typingIndicator.style.display = 'none';
+                    addChatMessage(u2.name, u2.color, u2.avatar, getRandomMessage());
+
+                    // 25% chance of a third message
+                    if (Math.random() < 0.25) {
+                        setTimeout(function() {
+                            var u3 = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+                            typingTextEl.textContent = u3.name + ' is typing...';
+                            typingIndicator.style.display = 'flex';
+                            setTimeout(function() {
+                                typingIndicator.style.display = 'none';
+                                addChatMessage(u3.name, u3.color, u3.avatar, getRandomMessage());
+                            }, 800 + Math.random() * 1200);
+                        }, 1000 + Math.random() * 1500);
+                    }
+                }, 800 + Math.random() * 1200);
+            }, 1500 + Math.random() * 2000);
         }
+    }, 1500 + Math.random() * 1500);
 
-        chatSendBtn.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') sendMessage();
-        });
+    // Next auto message: 4-8 seconds (much faster!)
+    setTimeout(autoFakeMessage, 4000 + Math.random() * 4000);
+}
 
-        function autoFakeMessage() {
-            var u = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+// Start auto messages after 3 seconds
+setTimeout(autoFakeMessage, 3000);
+
+// Random online count - more users now
+setInterval(function() {
+    var count = 8 + Math.floor(Math.random() * 15);
+    document.getElementById('onlineCount').textContent = count + ' Online';
+}, 10000);
+
+// Occasionally show "user joined" messages
+var joinMessages = [
+    ' just joined the chat! 👋',
+    ' is now online! 🟢',
+    ' entered the chat 💬',
+    ' has arrived! 🎉',
+    ' connected 🔗',
+    ' popped in! 👀',
+    ' is here! ✨',
+    ' just showed up! 🙌'
+];
+
+function randomJoinMessage() {
+    var u = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+    var joinMsg = u.name + joinMessages[Math.floor(Math.random() * joinMessages.length)];
+
+    var msg = document.createElement('div');
+    msg.className = 'chat-msg';
+    msg.innerHTML = '<div class="chat-msg-content" style="text-align:center;width:100%">' +
+        '<div class="chat-msg-text" style="color:var(--text-tertiary);font-size:10px;font-style:italic">' +
+        joinMsg + '</div></div>';
+    chatMessages.appendChild(msg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    setTimeout(randomJoinMessage, 15000 + Math.random() * 25000);
+}
+setTimeout(randomJoinMessage, 8000);
+
+// Conversation chains - users replying to each other
+function conversationChain() {
+    var conversations = [
+        [
+            { msg: 'Anyone else here a Roblox dev? 🎮', delay: 0 },
+            { msg: 'Me! I make obby games 🏃', delay: 3000 },
+            { msg: 'Same! Lua scripting is so fun 💻', delay: 5500 },
+            { msg: 'Vincent\'s Lua scripts are next level tho 🔥', delay: 8000 }
+        ],
+        [
+            { msg: 'What anime are you guys watching? 📺', delay: 0 },
+            { msg: 'Just finished Demon Slayer! 🗡️', delay: 2500 },
+            { msg: 'Jujutsu Kaisen for me 👊', delay: 5000 },
+            { msg: 'One Piece forever! 🏴‍☠️', delay: 7000 },
+            { msg: 'All great choices! 🎌', delay: 9000 }
+        ],
+        [
+            { msg: 'What\'s everyone\'s favorite tech stack? 🛠️', delay: 0 },
+            { msg: 'React + Node.js all day! ⚛️', delay: 3000 },
+            { msg: 'Python gang rise up! 🐍', delay: 5000 },
+            { msg: 'HTML/CSS/JS purist here 😤', delay: 7500 },
+            { msg: 'Vincent uses everything lol 😂', delay: 10000 }
+        ],
+        [
+            { msg: 'How did Vincent make this portfolio so fire? 🤔', delay: 0 },
+            { msg: 'Pure CSS magic I think ✨', delay: 2000 },
+            { msg: 'The animations are all custom 🎨', delay: 4500 },
+            { msg: 'Big brain energy fr 🧠', delay: 6500 }
+        ],
+        [
+            { msg: 'Who else is coding at 3am? 🌙', delay: 0 },
+            { msg: 'Guilty! Coffee keeps me alive ☕', delay: 2500 },
+            { msg: '3am coding hits different tho 🎧', delay: 5000 },
+            { msg: 'Night owls unite! 🦉', delay: 7000 }
+        ],
+        [
+            { msg: 'Rate this portfolio 1-10? 🤔', delay: 0 },
+            { msg: '11/10 easy 💯', delay: 2000 },
+            { msg: '100/10 no question 🏆', delay: 3500 },
+            { msg: 'Infinity/10 🔥🔥🔥', delay: 5500 },
+            { msg: 'Off the charts! 📈', delay: 7000 }
+        ],
+        [
+            { msg: 'What got you into coding? 💭', delay: 0 },
+            { msg: 'Wanted to make cool websites like this! 🌐', delay: 3000 },
+            { msg: 'Roblox scripting was my gateway 🎮', delay: 5500 },
+            { msg: 'YouTube tutorials honestly 📹', delay: 8000 },
+            { msg: 'Same! Self-taught gang 💪', delay: 10000 }
+        ],
+        [
+            { msg: 'Filipino developers are insane fr 🇵🇭', delay: 0 },
+            { msg: 'We built different! 💪', delay: 2500 },
+            { msg: 'Pinoy pride! 🇵🇭🔥', delay: 4000 },
+            { msg: 'Mabuhay! 🎉', delay: 6000 }
+        ]
+    ];
+
+    var convo = conversations[Math.floor(Math.random() * conversations.length)];
+    var shuffledUsers = fakeUsers.slice().sort(function() { return 0.5 - Math.random(); });
+
+    convo.forEach(function(entry, index) {
+        setTimeout(function() {
+            var u = shuffledUsers[index % shuffledUsers.length];
             typingTextEl.textContent = u.name + ' is typing...';
             typingIndicator.style.display = 'flex';
 
             setTimeout(function() {
                 typingIndicator.style.display = 'none';
-                addChatMessage(u.name, u.color, u.avatar, fakeMessages[Math.floor(Math.random() * fakeMessages.length)]);
-            }, 2000 + Math.random() * 2000);
+                addChatMessage(u.name, u.color, u.avatar, entry.msg);
+            }, 1000 + Math.random() * 800);
+        }, entry.delay);
+    });
 
-            setTimeout(autoFakeMessage, 8000 + Math.random() * 12000);
-        }
-        setTimeout(autoFakeMessage, 5000);
+    // Next conversation: 30-50 seconds
+    setTimeout(conversationChain, 30000 + Math.random() * 20000);
+}
 
-        setInterval(function() {
-            var count = 4 + Math.floor(Math.random() * 5);
-            document.getElementById('onlineCount').textContent = count + ' Online';
-        }, 15000);
+// Start conversations after 12 seconds
+setTimeout(conversationChain, 12000);
 
     })();
     </script>
