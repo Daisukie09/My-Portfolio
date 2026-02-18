@@ -57,7 +57,6 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* ===== INTRO SCREEN ===== */
 .intro-screen {
     position: fixed; inset: 0; z-index: 99999;
     background: var(--bg-primary);
@@ -128,7 +127,6 @@ body {
     100% { opacity: 0; transform: translateY(-100vh) scale(1); }
 }
 
-/* ===== AMBIENT ===== */
 .ambient-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
 .ambient-orb {
     position: absolute; border-radius: 50%;
@@ -173,7 +171,6 @@ body:hover .cursor-glow { opacity: 1; }
     box-shadow: 0 0 10px rgba(255,23,68,0.5);
 }
 
-/* ===== NAV ===== */
 nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
     padding: 16px 28px;
@@ -218,7 +215,6 @@ nav {
 }
 @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
 
-/* ===== MENU ===== */
 .menu-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.6);
     backdrop-filter: blur(6px); z-index: 999;
@@ -278,7 +274,6 @@ nav {
 .ham.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .ham.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* ===== MAIN ===== */
 main {
     position: relative; z-index: 3;
     max-width: 520px; margin: 0 auto;
@@ -297,18 +292,13 @@ main {
 .reveal.vanish-up { opacity: 0; transform: translateY(-60px) scale(0.95); filter: blur(6px); }
 .reveal.vanish-down { opacity: 0; transform: translateY(60px) scale(0.95); filter: blur(6px); }
 
-/* ===== BANNER ===== */
 .banner-section {
     position: relative; width: 100%;
     margin-bottom: -70px; border-radius: 16px;
     overflow: hidden; border: 1px solid var(--border);
     box-shadow: var(--shadow-card); z-index: 5;
 }
-.banner-image {
-    width: 100%; height: 220px;
-    object-fit: cover; display: block;
-    transition: transform 0.5s ease;
-}
+.banner-image { width: 100%; height: 220px; object-fit: cover; display: block; transition: transform 0.5s ease; }
 .banner-section:hover .banner-image { transform: scale(1.03); }
 .banner-overlay {
     position: absolute; inset: 0;
@@ -324,7 +314,6 @@ main {
 }
 @keyframes bannerLineFlow { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
 
-/* ===== PROFILE ===== */
 .profile { text-align: center; margin-bottom: 40px; }
 
 .profile-avatar-wrapper {
@@ -412,7 +401,66 @@ main {
 }
 @keyframes glowPulse { 0%,100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 1; transform: scale(1.15); } }
 
-/* ===== ANIMATED GLOWING NAME ===== */
+/* ===== ORBIT TECH ICONS ===== */
+.orbit-container {
+    position: absolute; inset: -60px;
+    z-index: 7; pointer-events: none;
+}
+.orbit-icon {
+    position: absolute; top: 50%; left: 50%;
+    width: 32px; height: 32px;
+    margin: -16px 0 0 -16px;
+    pointer-events: auto; z-index: 7;
+}
+.orbit-icon img {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: var(--bg-secondary);
+    box-shadow: 0 0 10px rgba(0,0,0,0.5), 0 0 20px var(--accent-glow);
+    transition: all 0.3s ease;
+    object-fit: contain; padding: 3px;
+}
+.orbit-icon:hover img {
+    transform: scale(1.4);
+    border-color: var(--accent);
+    box-shadow: 0 0 15px var(--accent), 0 0 30px var(--accent-glow);
+}
+.orbit-icon:nth-child(1) { animation: orbit1 8s linear infinite; }
+.orbit-icon:nth-child(2) { animation: orbit2 10s linear infinite; }
+.orbit-icon:nth-child(3) { animation: orbit3 12s linear infinite; }
+.orbit-icon:nth-child(4) { animation: orbit4 9s linear infinite; }
+.orbit-icon:nth-child(5) { animation: orbit5 11s linear infinite; }
+.orbit-icon:nth-child(6) { animation: orbit6 13s linear infinite; }
+.orbit-icon:nth-child(7) { animation: orbit7 7s linear infinite; }
+.orbit-icon:nth-child(8) { animation: orbit8 14s linear infinite; }
+
+@keyframes orbit1 { from { transform: rotate(0deg) translateX(100px) rotate(0deg); } to { transform: rotate(360deg) translateX(100px) rotate(-360deg); } }
+@keyframes orbit2 { from { transform: rotate(45deg) translateX(120px) rotate(-45deg); } to { transform: rotate(405deg) translateX(120px) rotate(-405deg); } }
+@keyframes orbit3 { from { transform: rotate(90deg) translateX(105px) rotate(-90deg); } to { transform: rotate(450deg) translateX(105px) rotate(-450deg); } }
+@keyframes orbit4 { from { transform: rotate(135deg) translateX(115px) rotate(-135deg); } to { transform: rotate(495deg) translateX(115px) rotate(-495deg); } }
+@keyframes orbit5 { from { transform: rotate(180deg) translateX(110px) rotate(-180deg); } to { transform: rotate(540deg) translateX(110px) rotate(-540deg); } }
+@keyframes orbit6 { from { transform: rotate(225deg) translateX(125px) rotate(-225deg); } to { transform: rotate(585deg) translateX(125px) rotate(-585deg); } }
+@keyframes orbit7 { from { transform: rotate(270deg) translateX(95px) rotate(-270deg); } to { transform: rotate(630deg) translateX(95px) rotate(-630deg); } }
+@keyframes orbit8 { from { transform: rotate(315deg) translateX(118px) rotate(-315deg); } to { transform: rotate(675deg) translateX(118px) rotate(-675deg); } }
+
+.orbit-ring {
+    position: absolute; border-radius: 50%;
+    border: 1px dashed rgba(255,255,255,0.04);
+    pointer-events: none;
+    animation: orbitRingPulse 4s ease-in-out infinite;
+}
+.orbit-ring-1 { inset: -30px; }
+.orbit-ring-2 { inset: -50px; }
+.orbit-ring-3 { inset: -70px; }
+@keyframes orbitRingPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+
+.orbit-icon[data-tooltip]::after {
+    bottom: calc(100% + 4px);
+    font-size: 9px; padding: 3px 8px;
+}
+
+/* ===== GLOWING NAME ===== */
 .glow-name-wrapper { text-align: center; margin-top: 16px; margin-bottom: 6px; position: relative; }
 
 .glow-name {
@@ -508,7 +556,6 @@ main {
 .social-link svg { width: 18px; height: 18px; position: relative; z-index: 1; }
 .social-link:active { transform: translateY(-2px) scale(0.95); }
 
-/* ===== ABOUT ME ===== */
 .about-section { margin-bottom: 28px; }
 .about-card {
     background: var(--bg-card); border: 1px solid var(--border);
@@ -540,7 +587,6 @@ main {
 }
 .about-tag:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
 
-/* ===== STATS ===== */
 .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 28px; }
 .stat-card {
     background: var(--bg-card); border: 1px solid var(--border);
@@ -559,7 +605,6 @@ main {
 }
 .stat-label { font-size: 9px; color: var(--text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-/* ===== INFO ===== */
 .info-section { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
 .info-card {
     background: var(--bg-card); border: 1px solid var(--border);
@@ -592,7 +637,6 @@ main {
 }
 .ping-dot { width: 5px; height: 5px; border-radius: 50%; background: #43e97b; animation: pulse 1.5s ease-in-out infinite; }
 
-/* ===== LINKS ===== */
 .links-section { margin-bottom: 28px; }
 .link-card {
     display: flex; align-items: center; gap: 14px;
@@ -623,7 +667,6 @@ main {
 .link-card-arrow { font-size: 16px; color: var(--text-tertiary); transition: all var(--tr); flex-shrink: 0; }
 .link-card:hover .link-card-arrow { color: var(--accent); transform: translateX(4px); }
 
-/* ===== TECH ===== */
 .tech-section { margin-bottom: 28px; }
 .section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
 .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text-tertiary); }
@@ -637,9 +680,7 @@ main {
 }
 .tech-pill:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); transform: translateY(-2px); }
 
-/* ===== ONLINE CHAT SECTION ===== */
 .online-section { margin-bottom: 28px; }
-
 .online-card {
     background: var(--bg-card); border: 1px solid var(--border);
     border-radius: var(--r); padding: 20px;
@@ -652,7 +693,6 @@ main {
 }
 .online-card:hover { border-color: var(--border-glow); background: var(--bg-card-hover); }
 .online-card:hover::before { opacity: 1; }
-
 .online-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .online-header-left { display: flex; align-items: center; gap: 10px; }
 .online-icon {
@@ -673,7 +713,6 @@ main {
     background: #43e97b; box-shadow: 0 0 8px rgba(67,233,123,0.6);
     animation: pulse 2s ease-in-out infinite;
 }
-
 .online-users-list { display: flex; flex-direction: column; gap: 8px; }
 .online-user {
     display: flex; align-items: center; gap: 12px;
@@ -689,7 +728,6 @@ main {
 .online-user:nth-child(5) { animation-delay: 0.5s; }
 .online-user:nth-child(6) { animation-delay: 0.6s; }
 @keyframes userFadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-
 .online-user-avatar { position: relative; flex-shrink: 0; }
 .online-user-avatar img {
     width: 38px; height: 38px; border-radius: 50%; object-fit: cover;
@@ -705,7 +743,6 @@ main {
 .online-user-status.idle { background: #ffd93d; box-shadow: 0 0 6px rgba(255,217,61,0.5); }
 .online-user-status.dnd { background: #ff4444; box-shadow: 0 0 6px rgba(255,68,68,0.5); }
 .online-user-status.offline { background: #555; }
-
 .online-user-info { flex: 1; min-width: 0; }
 .online-user-name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .online-user-activity {
@@ -713,8 +750,6 @@ main {
     margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .online-user-activity .activity-icon { font-size: 9px; margin-right: 3px; }
-.online-user-time { font-size: 10px; color: var(--text-tertiary); font-family: var(--mono); flex-shrink: 0; }
-
 .online-user-tag {
     padding: 2px 7px; border-radius: var(--rf);
     font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; flex-shrink: 0;
@@ -734,7 +769,6 @@ main {
 .online-user-tag.member {
     background: rgba(67,233,123,0.08); border: 1px solid rgba(67,233,123,0.15); color: #43e97b;
 }
-
 .chat-messages {
     margin-top: 16px; padding-top: 14px;
     border-top: 1px solid var(--border);
@@ -744,7 +778,6 @@ main {
 .chat-messages::-webkit-scrollbar { width: 4px; }
 .chat-messages::-webkit-scrollbar-track { background: transparent; }
 .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
 .chat-msg { display: flex; gap: 10px; animation: msgSlide 0.4s ease forwards; opacity: 0; }
 @keyframes msgSlide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .chat-msg-avatar {
@@ -761,7 +794,6 @@ main {
 .chat-msg-time { font-size: 9px; color: var(--text-tertiary); font-family: var(--mono); }
 .chat-msg-text { font-size: 12px; color: var(--text-secondary); line-height: 1.5; font-family: var(--mono); word-break: break-word; }
 .chat-msg-text .emoji { font-size: 14px; }
-
 .chat-input-wrapper { margin-top: 12px; display: flex; gap: 8px; align-items: center; }
 .chat-input {
     flex: 1; padding: 10px 14px; background: var(--bg-card);
@@ -780,7 +812,6 @@ main {
 }
 .chat-send-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px rgba(255,23,68,0.4); }
 .chat-send-btn:active { transform: scale(0.95); }
-
 .typing-indicator {
     display: flex; align-items: center; gap: 6px;
     padding: 6px 0; font-size: 10px; color: var(--text-tertiary); font-family: var(--mono);
@@ -797,7 +828,6 @@ main {
     30% { transform: translateY(-4px); opacity: 1; }
 }
 
-/* ===== FOOTER ===== */
 footer { text-align: center; padding-top: 28px; border-top: 1px solid var(--border); }
 .footer-made-by { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px; }
 .footer-made-text { font-size: 11px; color: var(--text-tertiary); font-weight: 500; }
@@ -846,4 +876,15 @@ footer { text-align: center; padding-top: 28px; border-top: 1px solid var(--bord
     .profile-avatar-mega-glow { inset: -35px; }
     .banner-image { height: 160px; }
     .banner-section { margin-bottom: -55px; }
+    .orbit-container { inset: -45px; }
+    .orbit-icon img { width: 26px; height: 26px; padding: 2px; }
+    .orbit-icon { width: 26px; height: 26px; margin: -13px 0 0 -13px; }
+    @keyframes orbit1 { from { transform: rotate(0deg) translateX(75px) rotate(0deg); } to { transform: rotate(360deg) translateX(75px) rotate(-360deg); } }
+    @keyframes orbit2 { from { transform: rotate(45deg) translateX(88px) rotate(-45deg); } to { transform: rotate(405deg) translateX(88px) rotate(-405deg); } }
+    @keyframes orbit3 { from { transform: rotate(90deg) translateX(78px) rotate(-90deg); } to { transform: rotate(450deg) translateX(78px) rotate(-450deg); } }
+    @keyframes orbit4 { from { transform: rotate(135deg) translateX(85px) rotate(-135deg); } to { transform: rotate(495deg) translateX(85px) rotate(-495deg); } }
+    @keyframes orbit5 { from { transform: rotate(180deg) translateX(80px) rotate(-180deg); } to { transform: rotate(540deg) translateX(80px) rotate(-540deg); } }
+    @keyframes orbit6 { from { transform: rotate(225deg) translateX(90px) rotate(-225deg); } to { transform: rotate(585deg) translateX(90px) rotate(-585deg); } }
+    @keyframes orbit7 { from { transform: rotate(270deg) translateX(72px) rotate(-270deg); } to { transform: rotate(630deg) translateX(72px) rotate(-630deg); } }
+    @keyframes orbit8 { from { transform: rotate(315deg) translateX(86px) rotate(-315deg); } to { transform: rotate(675deg) translateX(86px) rotate(-675deg); } }
 }
