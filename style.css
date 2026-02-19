@@ -273,13 +273,14 @@ main {
 }
 
     .reveal {
-    opacity: 0; transform: translateY(30px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 0; transform: translateY(40px) scale(0.98);
+    transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1),
+                transform 0.6s cubic-bezier(0.22,1,0.36,1);
     will-change: opacity, transform;
 }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal.vanish-up { opacity: 1; transform: translateY(0); }
-.reveal.vanish-down { opacity: 0; transform: translateY(30px); }
+.reveal.visible { opacity: 1; transform: translateY(0) scale(1); }
+.reveal.vanish-up { opacity: 0; transform: translateY(-40px) scale(0.98); }
+.reveal.vanish-down { opacity: 0; transform: translateY(40px) scale(0.98); }
 
 .tilt-card {
     transform-style: preserve-3d;
