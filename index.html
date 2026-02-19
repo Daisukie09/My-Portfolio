@@ -24,7 +24,7 @@
         <div class="intro-glow"></div>
         <div class="intro-content">
             <div class="intro-greeting">Welcome to my</div>
-<div class="intro-title">Portfolio Website</div>
+            <div class="intro-title">Portfolio Website</div>
             <div class="intro-subtitle">Developer & Designer</div>
             <div class="intro-hint">Tap anywhere to enter <span>&#8595;</span></div>
         </div>
@@ -326,7 +326,7 @@
                 <span class="footer-author">VincentSensei</span>
                 <svg class="footer-author-badge" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="11" fill="#1DA1F2"/><path d="M9.5 14.5L6 11l1.4-1.4 2.1 2.1 4.6-4.6L15.5 8.5l-6 6z" fill="white"/></svg>
             </div>
-            <p class="footer-text">&copy; 2026 VincentSensei &mdash; All Rights Reserved</p>
+            <p class="footer-text">&copy; 2025 VincentSensei &mdash; All Rights Reserved</p>
             <p class="footer-sub">Built with passion and clean code</p>
             <div class="footer-hearts"><span class="footer-heart">&#10084;&#65039;</span><span class="footer-heart">&#129505;</span><span class="footer-heart">&#128155;</span></div>
         </footer>
@@ -369,8 +369,8 @@ svs.forEach(function(el){countObs.observe(el);});
 var skillObs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){var fills=e.target.querySelectorAll('.skill-fill');fills.forEach(function(f){f.style.width=f.dataset.width+'%';});skillObs.unobserve(e.target);}});},{threshold:0.3});
 document.querySelectorAll('.skills-card').forEach(function(el){skillObs.observe(el);});
 var reveals=document.querySelectorAll('.reveal'),ticking=false;
-function initialReveal(){reveals.forEach(function(el,i){var rect=el.getBoundingClientRect();if(rect.top<window.innerHeight*0.85){el.style.transitionDelay=(i*0.12)+'s';el.classList.add('visible');}});}
-function handleScrollReveal(){var wH=window.innerHeight;reveals.forEach(function(el){var rect=el.getBoundingClientRect();el.style.transitionDelay='0s';if(rect.top<wH*0.92){el.classList.add('visible');el.classList.remove('vanish-up','vanish-down');}else if(rect.top>wH*1.1){el.classList.remove('visible');el.classList.add('vanish-down');}});ticking=false;}
+function initialReveal(){reveals.forEach(function(el,i){var rect=el.getBoundingClientRect();if(rect.top<window.innerHeight*0.85&&rect.bottom>window.innerHeight*0.15){el.style.transitionDelay=(i*0.12)+'s';el.classList.add('visible');el.classList.remove('vanish-up','vanish-down');}});}
+function handleScrollReveal(){var wH=window.innerHeight;reveals.forEach(function(el){var rect=el.getBoundingClientRect();el.style.transitionDelay='0s';if(rect.top<wH*0.9&&rect.bottom>wH*0.1){el.classList.add('visible');el.classList.remove('vanish-up','vanish-down');}else if(rect.bottom<wH*0.05){el.classList.remove('visible','vanish-down');el.classList.add('vanish-up');}else if(rect.top>wH*0.95){el.classList.remove('visible','vanish-up');el.classList.add('vanish-down');}});ticking=false;}
 window.addEventListener('scroll',function(){if(!ticking){requestAnimationFrame(handleScrollReveal);ticking=true;}},{passive:true});
 setTimeout(initialReveal,100);intro.addEventListener('transitionend',function(){initialReveal();});
 var pc=document.getElementById('particles');
@@ -381,7 +381,7 @@ document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
 function ag(){gx+=(mx-gx)*0.07;gy+=(my-gy)*0.07;gl.style.left=gx+'px';gl.style.top=gy+'px';requestAnimationFrame(ag);}ag();
 window.addEventListener('scroll',function(){var t=document.documentElement.scrollTop;var h=document.documentElement.scrollHeight-document.documentElement.clientHeight;document.getElementById('scrollProgress').style.width=(t/h)*100+'%';});
 
-var spotifySongs=[{song:'You(=i)',artist:'Bolbbalgan4',duration:222},{song:'Pretender',artist:'Official HIGE DANdism',duration:327},{song:'Idol',artist:'YOASOBI',duration:223},{song:'Gurenge',artist:'LiSA',duration:234},{song:'Unravel',artist:'TK from Ling Tosite Sigure',duration:240},{song:'Blue Bird',artist:'Ikimono-gakari',duration:215},{song:'Silhouette',artist:'KANA-BOON',duration:264}];
+var spotifySongs=[{song:'Shinunoga E-Wa',artist:'Fujii Kaze',duration:222},{song:'Pretender',artist:'Official HIGE DANdism',duration:327},{song:'Idol',artist:'YOASOBI',duration:223},{song:'Gurenge',artist:'LiSA',duration:234},{song:'Unravel',artist:'TK from Ling Tosite Sigure',duration:240},{song:'Blue Bird',artist:'Ikimono-gakari',duration:215},{song:'Silhouette',artist:'KANA-BOON',duration:264}];
 var spIdx=0,spTime=0;
 function updateSpotify(){var s=spotifySongs[spIdx];document.getElementById('spotifySong').textContent=s.song;document.getElementById('spotifyArtist').textContent=s.artist;var tm=Math.floor(s.duration/60),ts=String(s.duration%60).padStart(2,'0');document.getElementById('spotifyTotalTime').textContent=tm+':'+ts;}
 updateSpotify();
@@ -429,25 +429,7 @@ var leaveMsgs=[' left the chat',' went offline',' went AFK'];
 function leaveMsg(){var u=fakeUsers[Math.floor(Math.random()*fakeUsers.length)];var msg=document.createElement('div');msg.className='chat-msg';msg.innerHTML='<div class="chat-msg-content" style="text-align:center;width:100%"><div class="chat-msg-text" style="color:var(--text-tertiary);font-size:10px;font-style:italic">'+u.name+leaveMsgs[Math.floor(Math.random()*leaveMsgs.length)]+'</div></div>';chatMessages.appendChild(msg);chatMessages.scrollTop=chatMessages.scrollHeight;setTimeout(leaveMsg,20000+Math.random()*30000);}
 setTimeout(leaveMsg,18000);
 function convoChain(){var convos=[[{m:'Anyone else here a Roblox dev?',d:0},{m:'Me! I make obby games',d:2500},{m:'Same! Lua scripting is fun',d:4500},{m:'Vincent scripts are next level',d:6500}],[{m:'What anime are you watching?',d:0},{m:'Demon Slayer just ended',d:2000},{m:'Jujutsu Kaisen S3 hype',d:4000},{m:'One Piece forever!',d:5500},{m:'All W choices',d:7000}],[{m:'Rate this portfolio 1-10?',d:0},{m:'11/10 easy',d:1500},{m:'100/10 no question',d:3000},{m:'Infinity/10',d:4500},{m:'Off the charts!',d:6000}],[{m:'Dark mode or light mode?',d:0},{m:'Dark mode always',d:1500},{m:'My eyes appreciate dark mode',d:3000},{m:'Light mode people are brave lol',d:4500}],[{m:'Coffee or energy drinks?',d:0},{m:'Coffee all the way',d:2000},{m:'Monster energy at 3am',d:3500},{m:'Water. Im built different',d:5500}]];var c=convos[Math.floor(Math.random()*convos.length)];var su=fakeUsers.slice().sort(function(){return 0.5-Math.random();});c.forEach(function(e,i){setTimeout(function(){var u=su[i%su.length];typingTextEl.textContent=u.name+' is typing...';typingIndicator.style.display='flex';setTimeout(function(){typingIndicator.style.display='none';addChatMessage(u.name,u.color,u.avatar,e.m);},800+Math.random()*700);},e.d);});setTimeout(convoChain,25000+Math.random()*15000);}
-setTimeout(convoChain, 10000);
-
-    document.querySelectorAll('.about-card,.spotify-card,.discord-card,.skills-card,.online-card,.terminal-card,.achievement-card,.stat-card,.info-card,.link-card').forEach(function(card){
-    card.classList.add('tilt-card');
-    var shine=document.createElement('div');shine.className='tilt-shine';card.appendChild(shine);
-    card.addEventListener('mousemove',function(e){
-    var rect=card.getBoundingClientRect();
-    var x=(e.clientX-rect.left)/rect.width;
-    var y=(e.clientY-rect.top)/rect.height;
-    var rotY=(x-0.5)*12;
-    var rotX=(0.5-y)*12;
-    card.style.transform='perspective(800px) rotateX('+rotX+'deg) rotateY('+rotY+'deg) scale(1.02)';
-    shine.style.background='radial-gradient(circle at '+x*100+'% '+y*100+'%, rgba(255,255,255,0.12) 0%, transparent 60%)';
-    });
-    card.addEventListener('mouseleave',function(){
-    card.style.transform='perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
-    });
-    });
-
+setTimeout(convoChain,10000);
 })();
 </script>
 </body>
