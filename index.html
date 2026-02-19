@@ -369,8 +369,8 @@ svs.forEach(function(el){countObs.observe(el);});
 var skillObs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){var fills=e.target.querySelectorAll('.skill-fill');fills.forEach(function(f){f.style.width=f.dataset.width+'%';});skillObs.unobserve(e.target);}});},{threshold:0.3});
 document.querySelectorAll('.skills-card').forEach(function(el){skillObs.observe(el);});
 var reveals=document.querySelectorAll('.reveal'),ticking=false;
-function initialReveal(){reveals.forEach(function(el,i){var rect=el.getBoundingClientRect();if(rect.top<window.innerHeight*0.85&&rect.bottom>window.innerHeight*0.15){el.style.transitionDelay=(i*0.12)+'s';el.classList.add('visible');el.classList.remove('vanish-up','vanish-down');}});}
-function handleScrollReveal(){var wH=window.innerHeight;reveals.forEach(function(el){var rect=el.getBoundingClientRect();el.style.transitionDelay='0s';if(rect.top<wH*1.1&&rect.bottom>wH*-0.1){el.classList.add('visible');el.classList.remove('vanish-up','vanish-down');}});ticking=false;}
+function initialReveal(){reveals.forEach(function(el,i){var rect=el.getBoundingClientRect();if(rect.top<window.innerHeight*0.85){el.style.transitionDelay=(i*0.12)+'s';el.classList.add('visible');}});}
+function handleScrollReveal(){var wH=window.innerHeight;reveals.forEach(function(el){var rect=el.getBoundingClientRect();el.style.transitionDelay='0s';if(rect.top<wH*0.92){el.classList.add('visible');el.classList.remove('vanish-up','vanish-down');}else if(rect.top>wH*1.1){el.classList.remove('visible');el.classList.add('vanish-down');}});ticking=false;}
 window.addEventListener('scroll',function(){if(!ticking){requestAnimationFrame(handleScrollReveal);ticking=true;}},{passive:true});
 setTimeout(initialReveal,100);intro.addEventListener('transitionend',function(){initialReveal();});
 var pc=document.getElementById('particles');
