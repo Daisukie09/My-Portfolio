@@ -429,7 +429,25 @@ var leaveMsgs=[' left the chat',' went offline',' went AFK'];
 function leaveMsg(){var u=fakeUsers[Math.floor(Math.random()*fakeUsers.length)];var msg=document.createElement('div');msg.className='chat-msg';msg.innerHTML='<div class="chat-msg-content" style="text-align:center;width:100%"><div class="chat-msg-text" style="color:var(--text-tertiary);font-size:10px;font-style:italic">'+u.name+leaveMsgs[Math.floor(Math.random()*leaveMsgs.length)]+'</div></div>';chatMessages.appendChild(msg);chatMessages.scrollTop=chatMessages.scrollHeight;setTimeout(leaveMsg,20000+Math.random()*30000);}
 setTimeout(leaveMsg,18000);
 function convoChain(){var convos=[[{m:'Anyone else here a Roblox dev?',d:0},{m:'Me! I make obby games',d:2500},{m:'Same! Lua scripting is fun',d:4500},{m:'Vincent scripts are next level',d:6500}],[{m:'What anime are you watching?',d:0},{m:'Demon Slayer just ended',d:2000},{m:'Jujutsu Kaisen S3 hype',d:4000},{m:'One Piece forever!',d:5500},{m:'All W choices',d:7000}],[{m:'Rate this portfolio 1-10?',d:0},{m:'11/10 easy',d:1500},{m:'100/10 no question',d:3000},{m:'Infinity/10',d:4500},{m:'Off the charts!',d:6000}],[{m:'Dark mode or light mode?',d:0},{m:'Dark mode always',d:1500},{m:'My eyes appreciate dark mode',d:3000},{m:'Light mode people are brave lol',d:4500}],[{m:'Coffee or energy drinks?',d:0},{m:'Coffee all the way',d:2000},{m:'Monster energy at 3am',d:3500},{m:'Water. Im built different',d:5500}]];var c=convos[Math.floor(Math.random()*convos.length)];var su=fakeUsers.slice().sort(function(){return 0.5-Math.random();});c.forEach(function(e,i){setTimeout(function(){var u=su[i%su.length];typingTextEl.textContent=u.name+' is typing...';typingIndicator.style.display='flex';setTimeout(function(){typingIndicator.style.display='none';addChatMessage(u.name,u.color,u.avatar,e.m);},800+Math.random()*700);},e.d);});setTimeout(convoChain,25000+Math.random()*15000);}
-setTimeout(convoChain,10000);
+setTimeout(convoChain, 10000);
+
+    document.querySelectorAll('.about-card,.spotify-card,.discord-card,.skills-card,.online-card,.terminal-card,.achievement-card,.stat-card,.info-card,.link-card').forEach(function(card){
+    card.classList.add('tilt-card');
+    var shine=document.createElement('div');shine.className='tilt-shine';card.appendChild(shine);
+    card.addEventListener('mousemove',function(e){
+    var rect=card.getBoundingClientRect();
+    var x=(e.clientX-rect.left)/rect.width;
+    var y=(e.clientY-rect.top)/rect.height;
+    var rotY=(x-0.5)*12;
+    var rotX=(0.5-y)*12;
+    card.style.transform='perspective(800px) rotateX('+rotX+'deg) rotateY('+rotY+'deg) scale(1.02)';
+    shine.style.background='radial-gradient(circle at '+x*100+'% '+y*100+'%, rgba(255,255,255,0.12) 0%, transparent 60%)';
+    });
+    card.addEventListener('mouseleave',function(){
+    card.style.transform='perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
+    });
+    });
+
 })();
 </script>
 </body>
